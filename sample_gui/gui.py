@@ -1,3 +1,4 @@
+import Temperature
 import tkinter as tk                # python 3
 from tkinter import *
 from tkinter import font  as tkfont # python 3
@@ -39,23 +40,42 @@ class SampleApp(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-def tempDown(temp):
-    temp -= 1
-    # requestedTemperature = StartPage.requestedTemperature
-    # requestedTemperature -=  1
-    print(temp)
-    # requestedtTempString = StringVar()
-    # requestedtTempString.set(str(requestedtTemperature)+"°"+"F")
-
-def tempUp(temp):
-    temp += 1
-   # requestedTemperature = StartPage.requestedTemperature
-   # requestedTemperature +=  1
-    print(temp)
-   # requestedtTempString = StringVar()
-   # requestedtTempString.set(str(requestedtTemperature)+"°"+"F")
+################################
+#                              #
+#           START_PAGE         #
+#                              #
+################################
 
 class StartPage(tk.Frame):
+
+    def tempDown(self):
+        if(self.requestedTemperature > 60):
+            self.requestedTemperature -= 1
+            self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
+            self.requestedTempLabel.configure(text = self.requestedtTempString)
+            self.upButton.config(state="normal")
+        else:
+            self.downButton.config(state="disable")
+
+    def tempUp(self):
+        if(self.requestedTemperature < 90):
+            self.requestedTemperature += 1
+            self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
+            self.requestedTempLabel.configure(text = self.requestedtTempString)
+            self.downButton.config(state="normal")
+        else:
+            self.upButton.config(state="disable")
+
+    def systemToggle(self):
+        if(self.isOn == True):
+            self.isOn = False
+            self.systemOnOffButton.configure(text = "Off")
+            self.onOffLabel.configure(text = "System Off")
+        else:
+            self.isOn = True
+            self.systemOnOffButton.configure(text = "On")
+            self.onOffLabel.configure(text = "System On")
+
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -68,8 +88,8 @@ class StartPage(tk.Frame):
         timeLabel = tk.Label(self, text="12:00pm", font=controller.time_font)
         timeLabel.grid(row = 0, column = 1)
 
-        onOffLabel = tk.Label(self, text="System Off", font=controller.time_font)
-        onOffLabel.grid(row = 0, column = 2)
+        self.onOffLabel = tk.Label(self, text="System Off", font=controller.time_font)
+        self.onOffLabel.grid(row = 0, column = 2)
 
         vacayButton = tk.Button(self, text="Vaction Mode")
         vacayButton.grid(row = 0, column = 3)
@@ -77,33 +97,54 @@ class StartPage(tk.Frame):
         vacayButton = tk.Button(self, text="Choose City", command=lambda: controller.show_frame("CityPage"))
         vacayButton.grid(row = 0, column = 4)
 
-        day1TempLabel = tk.Label(self, text="Sunday", font=controller.day_font)
+
+        # 3 Day forecast
+
+        day1 = "Sunday "
+        day2 = "Monday "
+        day3 = "Tuesday "
+
+        day1Temp = 80
+        day2Temp = 78
+        day3Temp = 82
+
+        day1TempString = StringVar()
+        day1TempString.set(day1+str(day1Temp)+"°"+"F")
+
+        day2TempString = StringVar()
+        day2TempString.set(day2+str(day2Temp)+"°"+"F")
+
+        day3TempString = StringVar()
+        day3TempString.set(day3+str(day2Temp)+"°"+"F")
+
+        day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font)
         day1TempLabel.grid(row = 0, column = 5)
 
-        day2TempLabel = tk.Label(self, text="Monday", font=controller.day_font)
+        day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font)
         day2TempLabel.grid(row = 1, column = 5)
 
-        day3TempLabel = tk.Label(self, text="Tuesday", font=controller.day_font)
+        day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font)
         day3TempLabel.grid(row = 2, column = 5)
 
-        currentTemperature = 80
-        requestedTemperature = 75
 
-        currentTempString = StringVar()
-        currentTempString.set(str(currentTemperature)+"°"+"F")
+        self.currentTemperature = 80
+        self.requestedTemperature = 75
 
-        requestedtTempString = StringVar()
-        requestedtTempString.set(str(requestedTemperature)+"°"+"F")
+        self.currentTempString = str(self.currentTemperature)+"°"+"F"
+
+        self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
 
 
-        currentTempLabel = tk.Label(self, text=currentTempString.get(), font=controller.temp_font)
-        currentTempLabel.grid(row = 1, column = 0)
+        self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font)
+        self.currentTempLabel.grid(row = 1, column = 0)
 
-        requestedTempLabel = tk.Label(self, text=requestedtTempString.get(), font=controller.temp_font)
-        requestedTempLabel.grid(row = 2, column = 0)
+        self.requestedTempLabel = tk.Label(self, text=self.requestedtTempString, font=controller.temp_font)
+        self.requestedTempLabel.grid(row = 2, column = 0)
 
-        systemOnOffButton = tk.Button(self, text="System On")
-        systemOnOffButton.grid(row = 3, column = 0)
+        self.systemOnOffButton = tk.Button(self, text="Off",command= self.systemToggle)
+        self.systemOnOffButton.grid(row = 3, column = 0)
+
+        self.isOn = False
 
         settingsButton = tk.Button(self, text="Settings", command=lambda: controller.show_frame("SettingsPage"))
         settingsButton.grid(row = 4, column = 0)
@@ -113,16 +154,19 @@ class StartPage(tk.Frame):
         upArrow = tk.PhotoImage(file = "up_arrow.gif")
         downArrow = tk.PhotoImage(file = "down_arrow.gif")
 
-        upButton = tk.Button(self, text="Settings", command= lambda: tempUp(requestedTemperature))
-        upButton.grid(row = 3, column = 5)
+        self.upButton = tk.Button(self, text="Up", command= self.tempUp)
+        self.upButton.grid(row = 3, column = 5)
 
-        downButton = tk.Button(self, text="Settings", command= lambda: tempDown(requestedTemperature))
-        downButton.grid(row = 4, column = 5)
+        self.downButton = tk.Button(self, text="Down", command= self.tempDown)
+        self.downButton.grid(row = 4, column = 5)
 
-        # def systemToggle():
-        #    global isOn
-        #    isOn = !isOn
 
+
+###################################
+#                                 #
+#           SETTINGS_PAGE         #
+#                                 #
+###################################
 class SettingsPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -141,12 +185,30 @@ class CityPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         label = tk.Label(self, text="This is cities page!", font=controller.temp_font)
-        label.pack(side="top", fill="x", pady=10)
+        label.grid(row = 0, column = 0)
+
         button = tk.Button(self, text="Go Back",
                            command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        button.grid(row = 1, column = 0)
 
+        Lb1 = Listbox(self)
+        Lb1.insert(1, "SEOUL, South Korea")
+        Lb1.insert(2, "São Paulo, Brazil")
+        Lb1.insert(3, "Bombay, India")
+        Lb1.insert(4, "JAKARTA, Indonesia")
+        Lb1.insert(5, "Karachi, Pakistan")
+        Lb1.insert(6, "MOSKVA (Moscow), Russia")
+        Lb1.insert(7, "Istanbul, Turkey")
+        Lb1.insert(8, "SEOUL, South Korea")
+        Lb1.insert(9, "São Paulo, Brazil")
+        Lb1.insert(10, "Bombay, India")
+        Lb1.insert(11, "JAKARTA, Indonesia")
+        Lb1.insert(12, "Karachi, Pakistan")
+        Lb1.insert(13, "MOSKVA (Moscow), Russia")
+        Lb1.insert(14, "Istanbul, Turkey")
+        Lb1.grid(row = 0, column = 1)
 
 if __name__ == "__main__":
     app = SampleApp()
