@@ -1,4 +1,9 @@
-import Temperature
+##############################################
+# Created on: 
+# Written by: 
+#
+##############################################
+from weather import Weather, Unit
 import tkinter as tk                # python 3
 from tkinter import *
 from tkinter import font  as tkfont # python 3
@@ -10,6 +15,7 @@ class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
+        # Fonts defined here
         self.temp_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
         self.time_font = tkfont.Font(family='Helvetica', size=10)
         self.day_font = tkfont.Font(family='Helvetica', size=16)
@@ -51,7 +57,7 @@ class StartPage(tk.Frame):
     def tempDown(self):
         if(self.requestedTemperature > 60):
             self.requestedTemperature -= 1
-            self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
+            self.requestedtTempString = str(self.requestedTemperature)+""+"F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
             self.upButton.config(state="normal")
         else:
@@ -60,7 +66,7 @@ class StartPage(tk.Frame):
     def tempUp(self):
         if(self.requestedTemperature < 90):
             self.requestedTemperature += 1
-            self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
+            self.requestedtTempString = str(self.requestedTemperature)+""+"F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
             self.downButton.config(state="normal")
         else:
@@ -81,9 +87,12 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        wifiImage = PhotoImage(file = "wifi.gif")
+       	wifiImage = PhotoImage(file = "wifi.gif")
+	
         wifiLabel = tk.Label(self, image = wifiImage)
-        wifiLabel.grid(row = 0,column = 0)
+        wifiLabel.grid(row = 0,column = 1)
+        wifiLabel.image = wifiImage
+
 
         timeLabel = tk.Label(self, text="12:00pm", font=controller.time_font)
         timeLabel.grid(row = 0, column = 1)
@@ -99,23 +108,33 @@ class StartPage(tk.Frame):
 
 
         # 3 Day forecast
-
-        day1 = "Sunday "
-        day2 = "Monday "
-        day3 = "Tuesday "
-
-        day1Temp = 80
-        day2Temp = 78
-        day3Temp = 82
+        def threeDayForecast(loc):
+            weather = Weather(unit=Unit.FAHRENHEIT)
+            location = weather.lookup_by_location(loc)
+            forecasts = location.forecast
+            return forecasts
+    
+        def locationTemperature(loc):
+            weather = Weather(unit=Unit.FAHRENHEIT)
+            location = weather.lookup_by_location(loc)
+            condition = location.condition
+            temperature = condition.temp
+            return temperature
+        
+        days = [None] * 3
+        forecast = threeDayForecast('Fullerton,CA')
+        for i in range(0,3):
+            days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high
+            print(days[i])
 
         day1TempString = StringVar()
-        day1TempString.set(day1+str(day1Temp)+"°"+"F")
+        day1TempString.set(days[0])
 
         day2TempString = StringVar()
-        day2TempString.set(day2+str(day2Temp)+"°"+"F")
+        day2TempString.set(days[1])
 
         day3TempString = StringVar()
-        day3TempString.set(day3+str(day2Temp)+"°"+"F")
+        day3TempString.set(days[2])
 
         day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font)
         day1TempLabel.grid(row = 0, column = 5)
@@ -130,9 +149,9 @@ class StartPage(tk.Frame):
         self.currentTemperature = 80
         self.requestedTemperature = 75
 
-        self.currentTempString = str(self.currentTemperature)+"°"+"F"
+        self.currentTempString = str(self.currentTemperature)+""+"F"
 
-        self.requestedtTempString = str(self.requestedTemperature)+"°"+"F"
+        self.requestedtTempString = str(self.requestedTemperature)+""+"F"
 
 
         self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font)
@@ -154,11 +173,13 @@ class StartPage(tk.Frame):
         upArrow = tk.PhotoImage(file = "up_arrow.gif")
         downArrow = tk.PhotoImage(file = "down_arrow.gif")
 
-        self.upButton = tk.Button(self, text="Up", command= self.tempUp)
+        self.upButton = tk.Button(self, image = upArrow, command= self.tempUp)
+        self.upButton.image = upArrow
         self.upButton.grid(row = 3, column = 5)
-
-        self.downButton = tk.Button(self, text="Down", command= self.tempDown)
+        self.downButton = tk.Button(self, image = downArrow, command= self.tempDown)
         self.downButton.grid(row = 4, column = 5)
+        self.downButton.image = downArrow
+	
 
 
 
@@ -195,6 +216,7 @@ class CityPage(tk.Frame):
 
         button = tk.Button(self, text="Go Back",
                            command=lambda: controller.show_frame("StartPage"))
+
         button.grid(row = 0, column = 0)
 
 
@@ -202,22 +224,24 @@ class CityPage(tk.Frame):
         "Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey")
         cityOptions.grid(row = 0, column = 1)
 
-        # Lb1 = Listbox(self)
-        # Lb1.insert(1, "SEOUL, South Korea")
-        # Lb1.insert(2, "São Paulo, Brazil")
-        # Lb1.insert(3, "Bombay, India")
-        # Lb1.insert(4, "JAKARTA, Indonesia")
-        # Lb1.insert(5, "Karachi, Pakistan")
-        # Lb1.insert(6, "MOSKVA (Moscow), Russia")
-        # Lb1.insert(7, "Istanbul, Turkey")
-        # Lb1.insert(8, "SEOUL, South Korea")
-        # Lb1.insert(9, "São Paulo, Brazil")
-        # Lb1.insert(10, "Bombay, India")
-        # Lb1.insert(11, "JAKARTA, Indonesia")
-        # Lb1.insert(12, "Karachi, Pakistan")
-        # Lb1.insert(13, "MOSKVA (Moscow), Russia")
-        # Lb1.insert(14, "Istanbul, Turkey")
-        # Lb1.grid(row = 0, column = 1)
+        button.grid(row = 1, column = 0)
+
+        Lb1 = Listbox(self)
+        Lb1.insert(1, "SEOUL, South Korea")
+        Lb1.insert(2, "Sao Paulo, Brazil")
+        Lb1.insert(3, "Bombay, India")
+        Lb1.insert(4, "JAKARTA, Indonesia")
+        Lb1.insert(5, "Karachi, Pakistan")
+        Lb1.insert(6, "MOSKVA (Moscow), Russia")
+        Lb1.insert(7, "Istanbul, Turkey")
+        Lb1.insert(8, "SEOUL, South Korea")
+        Lb1.insert(9, "Sao Paulo, Brazil")
+        Lb1.insert(10, "Bombay, India")
+        Lb1.insert(11, "JAKARTA, Indonesia")
+        Lb1.insert(12, "Karachi, Pakistan")
+        Lb1.insert(13, "MOSKVA (Moscow), Russia")
+        Lb1.insert(14, "Istanbul, Turkey")
+        Lb1.grid(row = 0, column = 1)
 
 if __name__ == "__main__":
     app = SampleApp()
