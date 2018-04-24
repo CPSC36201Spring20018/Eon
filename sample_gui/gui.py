@@ -185,30 +185,39 @@ class CityPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        #
+        # label = tk.Label(self, text="This is cities page!", font=controller.temp_font)
+        # label.grid(row = 0, column = 0)
 
-        label = tk.Label(self, text="This is cities page!", font=controller.temp_font)
-        label.grid(row = 0, column = 0)
+        variable = StringVar(self)
+        variable.set("City") # default value
+
 
         button = tk.Button(self, text="Go Back",
                            command=lambda: controller.show_frame("StartPage"))
-        button.grid(row = 1, column = 0)
+        button.grid(row = 0, column = 0)
 
-        Lb1 = Listbox(self)
-        Lb1.insert(1, "SEOUL, South Korea")
-        Lb1.insert(2, "São Paulo, Brazil")
-        Lb1.insert(3, "Bombay, India")
-        Lb1.insert(4, "JAKARTA, Indonesia")
-        Lb1.insert(5, "Karachi, Pakistan")
-        Lb1.insert(6, "MOSKVA (Moscow), Russia")
-        Lb1.insert(7, "Istanbul, Turkey")
-        Lb1.insert(8, "SEOUL, South Korea")
-        Lb1.insert(9, "São Paulo, Brazil")
-        Lb1.insert(10, "Bombay, India")
-        Lb1.insert(11, "JAKARTA, Indonesia")
-        Lb1.insert(12, "Karachi, Pakistan")
-        Lb1.insert(13, "MOSKVA (Moscow), Russia")
-        Lb1.insert(14, "Istanbul, Turkey")
-        Lb1.grid(row = 0, column = 1)
+
+        cityOptions = OptionMenu(self, variable, "Los Angeles", "Las Vegas", "New York","Miami","SEOUL, South Korea","São Paulo, Brazil"
+        "Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey")
+        cityOptions.grid(row = 0, column = 1)
+
+        # Lb1 = Listbox(self)
+        # Lb1.insert(1, "SEOUL, South Korea")
+        # Lb1.insert(2, "São Paulo, Brazil")
+        # Lb1.insert(3, "Bombay, India")
+        # Lb1.insert(4, "JAKARTA, Indonesia")
+        # Lb1.insert(5, "Karachi, Pakistan")
+        # Lb1.insert(6, "MOSKVA (Moscow), Russia")
+        # Lb1.insert(7, "Istanbul, Turkey")
+        # Lb1.insert(8, "SEOUL, South Korea")
+        # Lb1.insert(9, "São Paulo, Brazil")
+        # Lb1.insert(10, "Bombay, India")
+        # Lb1.insert(11, "JAKARTA, Indonesia")
+        # Lb1.insert(12, "Karachi, Pakistan")
+        # Lb1.insert(13, "MOSKVA (Moscow), Russia")
+        # Lb1.insert(14, "Istanbul, Turkey")
+        # Lb1.grid(row = 0, column = 1)
 
 if __name__ == "__main__":
     app = SampleApp()
