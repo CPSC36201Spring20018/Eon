@@ -17,3 +17,7 @@
         1.1 Use Case Report.pdf
         1.2 Analysis Class Report.pdf
         1.3 Written Requirements.pdf
+
+    2. Program files
+	2.1 GUI.py
+	2.2 

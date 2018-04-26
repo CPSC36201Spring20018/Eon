@@ -125,7 +125,6 @@ class StartPage(tk.Frame):
         forecast = threeDayForecast('Fullerton,CA')
         for i in range(0,3):
             days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high
-            print(days[i])
 
         day1TempString = StringVar()
         day1TempString.set(days[0])
