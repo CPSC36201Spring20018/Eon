@@ -1,7 +1,5 @@
 import os
 import glob
-import time
-from datetime import datetime
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -27,16 +25,3 @@ def read_temp():
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32.0
         return temp_c, temp_f
-
-while True:
-    temp = read_temp()
-    temp = temp[1]
-    i = 'am'
-    t = datetime.time(datetime.now())
-    t_h = str(t)[:2]
-    if int(t_h) > 12:
-        i = 'pm' 
-    t_h = int(t_h) % 12
-    t = str(t_h) + str(t)[2:5]
-    print("At {0}{2} it was {1}F".format(t, temp, i))
-    time.sleep(60)
