@@ -63,7 +63,7 @@ def create(requested_temp, start, end, day):
     event = service.events().insert(calendarId=HVAC, body=event).execute()
 
 def main():
-    create('65','2018-04-30T09:00:00-07:00','2018-04-30T09:30:00-07:00','MO')
+    delete('35a4b7o9ksd400b5cafq5ci1qj')
 
 if __name__ == '__main__':
     main()
