@@ -207,8 +207,7 @@ class StartPage(tk.Frame):
         forecast = threeDayForecast(self.variable.get())
         for i in range(0,3):
             days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high + "° F"
-        print(locat)
-
+            print(locat)
 
         day1TempString = tk.StringVar()
         day1TempString.set(days[0])

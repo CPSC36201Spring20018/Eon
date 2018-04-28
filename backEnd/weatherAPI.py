@@ -1,3 +1,4 @@
+import ipLocation
 from weather import Weather, Unit
 
 def threeDayForecast(loc):
@@ -13,7 +14,9 @@ def locationTemperature(loc):
     temperature = condition.temp
     return temperature
 
-loca = 'Fullerton,CA'
+loca = ipLocation.location()
+loca = loca[0] + ',' + loca[1]
+print(loca)
 print("it is currently ", locationTemperature(loca), " in ", loca)
 print()
 forecast = threeDayForecast(loca)
