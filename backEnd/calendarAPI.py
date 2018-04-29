@@ -29,13 +29,14 @@ def initialize_write():
 def list():
     service = initialize_read()
     page_token = None
-    while True:
-        events = service.events().list(calendarId=HVAC, pageToken=page_token).execute()
-        for event in events['items']:
-            print(event['start'].get('dateTime', event['start'].get('date')),event['summary'])
-        page_token = events.get('nextPageToken')
-        if not page_token:
-            break
+    return service.events().list(calendarId=HVAC, pageToken=page_token).execute()
+    #while True:
+     #   events = service.events().list(calendarId=HVAC, pageToken=page_token).execute()
+     #   for event in events['items']:
+     #       print(event['start'].get('dateTime', event['start'].get('date')),event['summary'])
+     #   page_token = events.get('nextPageToken')
+     #   if not page_token:
+     #       break
 
 def delete(event):
     service = initialize_write()
@@ -44,26 +45,31 @@ def delete(event):
 def create(requested_temp, start, end, day):
     service = initialize_write()
     event = {
-        'summary': '90',
+        'summary': requested_temp,
         'start': {
-            'dateTime': '2018-04-30T09:00:00-07:00',
+            'dateTime': start.isoformat(),
             'timeZone': 'America/Los_Angeles',
         },
         'end': {
-            'dateTime': '2018-04-30T09:30:00-07:00',
+            'dateTime': end.isoformat(),
             'timeZone': 'America/Los_Angeles',
         },
         'recurrence': [
-            'RRULE:FREQ=WEEKLY;DAY=MO'
+            'RRULE:FREQ=WEEKLY;DAY={0}'.format(day)
         ],
         'reminders': {
             'useDefault': True,
         },
     }
+    print(event)
     event = service.events().insert(calendarId=HVAC, body=event).execute()
 
 def main():
-    delete('35a4b7o9ksd400b5cafq5ci1qj')
+    delta1 = datetime.timedelta(minutes=30)
+    delta2 = datetime.timedelta(minutes=60)
+    start = datetime.datetime.now() + delta1
+    end = start + delta2
+    create('90',start,end,'FR')
 
 if __name__ == '__main__':
     main()

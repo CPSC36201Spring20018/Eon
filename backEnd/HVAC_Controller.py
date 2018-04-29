@@ -37,27 +37,3 @@ def HeatOff():
     print('Heat off')
     gpio.output(18,gpio.LOW)
     return False
-
-
-AC = False
-Heat = False
-threshold = 3
-requested_temp = 0 #0 is the predefined off state
-og_time = datetime.time(datetime.now())
-
-
-while True:
-    temp = tempRead.read_temp()
-    temp_f = temp[1]
-    current_time = datetime.time(datetime.now())
-    if int(current_time.minute) == int(og_time.minute) + 1:
-        requested_temp = ChangeTemp(requested_temp, temp_f)
-        og_time = datetime.time(datetime.now())
-    if AC == True and (temp_f <= requested_temp or requested_temp == 0):
-        AC = ACOff()
-    if Heat == True and (temp_f >= requested_temp or requested_temp == 0):
-        Heat = HeatOff()
-    if AC == False and temp_f > requested_temp + threshold and requested_temp != 0:
-        AC = ACOn()
-    if Heat == False and temp_f < requested_temp - threshold and requested_temp != 0:
-        Heat = HeatOn()
