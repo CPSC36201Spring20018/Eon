@@ -135,7 +135,7 @@ class StartPage(tk.Frame):
         
         now = datetime.datetime.now().time()
 
-        timeLabel = tk.Label(twsFrame, text=now.strftime("%I:%M"), font=controller.time_font)
+        timeLabel = tk.Label(twsFrame, text=now.strftime("%I:%M %p"), font=controller.time_font)
         timeLabel.pack()
 
         self.onOffLabel = tk.Label(twsFrame, text="System Off", font=controller.time_font)
@@ -155,8 +155,6 @@ class StartPage(tk.Frame):
         vccFrame.grid_rowconfigure(0, weight=1)
         vccFrame.grid_columnconfigure(1, weight=1)
 
-        vacayButton = tk.Button(vccFrame, text="Vaction Mode", command=self.vacayToggle)
-        vacayButton.pack(side='left')
 
 
         ################################
@@ -180,14 +178,17 @@ class StartPage(tk.Frame):
         self.variable = tk.StringVar(self)
         self.variable.set("City")
         
-        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
+        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "Jakarta, Indonesia","Karachi, Pakistan","Moskva (Moscow), Russia","Istanbul, Turkey"]
 
         cityOptions = tk.OptionMenu(vccFrame, self.variable,*cities ,command=selectCity)
-        cityOptions.pack(fill='x',side='right')
+        cityOptions.pack(fill='x',side='top')
         
         # Trying to figure out how to pass data through pages
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
 #        vacayButton.pack(side='left')
+
+        vacayButton = tk.Button(vccFrame, text="Vaction Mode", command=self.vacayToggle)
+        vacayButton.pack(side='left')
 
         calButton = tk.Button(vccFrame, text="Calendar", command=lambda: controller.show_frame("CalendarPage"))
         calButton.pack(side='left')
@@ -344,7 +345,7 @@ class CityPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        #
+        
         # label = tk.Label(self, text="This is cities page!", font=controller.temp_font)
         # label.grid(row = 0, column = 0)
 
