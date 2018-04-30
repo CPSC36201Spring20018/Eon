@@ -92,11 +92,9 @@ class StartPage(tk.Frame):
         if(self.isOn == True):
             self.isOn = False
             self.systemOnOffButton.configure(text = "Off")
-            self.onOffLabel.configure(text = "System Off")
         else:
             self.isOn = True
             self.systemOnOffButton.configure(text = "On")
-            self.onOffLabel.configure(text = "System On")
 
     def vacayToggle(self):
         if(self.vacayIsOn == True):

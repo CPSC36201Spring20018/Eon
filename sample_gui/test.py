@@ -21,13 +21,13 @@ class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        
+      
         spaceImage = tk.PhotoImage(file = "space.gif")
         
         spaceLabel = tk.Label(self, image = spaceImage)
         spaceLabel.pack()
         spaceLabel.image = spaceImage
-        # Fonts defined here
+        # Fonts defined here#
         self.temp_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
         self.time_font = tkfont.Font(family='Helvetica', size=10)
         self.day_font = tkfont.Font(family='Helvetica', size=14)
@@ -89,11 +89,9 @@ class StartPage(tk.Frame):
         if(self.isOn == True):
             self.isOn = False
             self.systemOnOffButton.configure(text = "Off")
-            self.onOffLabel.configure(text = "System Off")
         else:
             self.isOn = True
             self.systemOnOffButton.configure(text = "On")
-            self.onOffLabel.configure(text = "System On")
 
     def vacayToggle(self):
         if(self.vacayIsOn == True):
@@ -129,21 +127,16 @@ class StartPage(tk.Frame):
         twsFrame.grid_rowconfigure(0, weight=1)
         twsFrame.grid_columnconfigure(0, weight=1)
 
-        timeFrame = tk.Label(self)
-        timeFrame.grid(row=0,column=2,sticky='n', pady=10)
-        timeFrame.grid_rowconfigure(0, weight=1)
-        timeFrame.grid_columnconfigure(0, weight=1)
-        
        	wifiImage = tk.PhotoImage(file = "wifi.gif")
 	
         wifiLabel = tk.Label(wifiFrame, image = wifiImage)
         wifiLabel.image = wifiImage
-        wifiLabel.pack()
+        wifiLabel.pack(side='right')
         
         now = datetime.datetime.now().time()
 
-        timeLabel = tk.Label(timeFrame, text=now.strftime("%I:%M"), font=controller.time_font)
-        timeLabel.pack()
+        timeLabel = tk.Label(wifiFrame, text=now.strftime("%I:%M %p"), font=controller.time_font)
+        timeLabel.pack(side='left')
 
         
         self.onOffVacayLabel = tk.Label(twsFrame, text="Vacation Mode Off", font=controller.time_font)
@@ -155,12 +148,28 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         ################################
 
-        vccFrame = tk.Label(self)
-        vccFrame.grid(row=0,column=1,sticky='n',pady=10)
-        vccFrame.grid_rowconfigure(1, weight=1)
-        vccFrame.grid_columnconfigure(1, weight=1)
+        controlFrame = tk.Label(self)
+        controlFrame.grid(row=0,column=0,sticky='n',pady=10)
+        controlFrame.grid_rowconfigure(1, weight=1)
+        controlFrame.grid_columnconfigure(1, weight=1)
+       
+        ################################
+        #                              #
+        #           CONTROLS           #
+        #           SETTINGS           #
+        #                              #
+        ################################
 
-        vacayButton = tk.Button(vccFrame, text="Vaction Mode", command=self.vacayToggle)
+
+        self.systemOnOffButton = tk.Button(controlFrame, text="Off",command= self.systemToggle)
+        self.systemOnOffButton.pack(side='left')
+        
+        settingsImage = tk.PhotoImage(file = "cog.png")
+        
+        settingsButton = tk.Button(controlFrame, image = settingsImage, command=lambda: controller.show_frame("SettingsPage"))
+        settingsButton.image = settingsImage
+        settingsButton.pack(side='left')
+        vacayButton = tk.Button(controlFrame, text="Vaction Mode", command=self.vacayToggle)
         vacayButton.pack(side='left')
 
 
@@ -187,14 +196,14 @@ class StartPage(tk.Frame):
         
         cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
-        cityOptions = tk.OptionMenu(vccFrame, self.variable,*cities ,command=selectCity)
+        cityOptions = tk.OptionMenu(controlFrame, self.variable,*cities ,command=selectCity)
         cityOptions.pack(fill='x',side='right')
         
         # Trying to figure out how to pass data through pages
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
 #        vacayButton.pack(side='left')
 
-        calButton = tk.Button(vccFrame, text = "Calendar", command=lambda: controller.show_frame("CalendarPage"))
+        calButton = tk.Button(controlFrame, text = "Calendar", command=lambda: controller.show_frame("CalendarPage"))
         calButton.pack(side='left')
 
         ################################
@@ -282,26 +291,6 @@ class StartPage(tk.Frame):
         self.requestedTempLabel = tk.Label(tempFrame, text=self.requestedtTempString, font=controller.temp_font)
         self.requestedTempLabel.pack(padx=10,pady=10)
 
-        ################################
-        #                              #
-        #           CONTROLS           #
-        #           SETTINGS           #
-        #                              #
-        ################################
-
-        controlFrame = tk.Label(self)
-        controlFrame.grid(row=0,column=0)
-        controlFrame.grid_rowconfigure(0, weight=1)
-        controlFrame.grid_columnconfigure(0, weight=1)
-
-        self.systemOnOffButton = tk.Button(controlFrame, text="Off",command= self.systemToggle)
-        self.systemOnOffButton.pack(padx=10,pady=10)
-        
-        settingsImage = tk.PhotoImage(file = "cog.png")
-        
-        settingsButton = tk.Button(controlFrame, image = settingsImage, command=lambda: controller.show_frame("SettingsPage"))
-        settingsButton.image = settingsImage
-        settingsButton.pack(padx=10,pady=10)
 
         ################################
         #                              #
@@ -316,8 +305,8 @@ class StartPage(tk.Frame):
 
         tempControlFrame = tk.Label(self)
         tempControlFrame.grid(row=2,column=1, sticky='n', pady = 10)
-        controlFrame.grid_rowconfigure(0, weight=1)
-        controlFrame.grid_columnconfigure(1, weight=1)
+        #controlFrame.grid_rowconfigure(0, weight=1)
+        #controlFrame.grid_columnconfigure(1, weight=1)
 
         self.upButton = tk.Button(tempControlFrame, image = upArrow, command= self.tempUp)
         self.upButton.image = upArrow
