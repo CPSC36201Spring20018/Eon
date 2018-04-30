@@ -21,30 +21,28 @@ class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-      
-        spaceImage = tk.PhotoImage(file = "space.gif")
-        
-        spaceLabel = tk.Label(self, image = spaceImage)
-        spaceLabel.pack()
-        spaceLabel.image = spaceImage
+     
         # Fonts defined here#
-        self.temp_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        self.time_font = tkfont.Font(family='Helvetica', size=10)
-        self.day_font = tkfont.Font(family='Helvetica', size=14)
+        self.temp_font = tkfont.Font(family='Ariel', size=35, weight="bold", slant="italic")
+        self.time_font = tkfont.Font(family='Ariel', size=10)
+        self.day_font = tkfont.Font(family='Ariel', size=12)
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
-        container = tk.Frame(spaceLabel, background="grey")
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        spaceImage = tk.PhotoImage(file = "space.gif")
+        spaceLabel = tk.Label(self, image = spaceImage)
+        spaceLabel.place(x=0, y=0, relwidth=1, relheight=1)
+        spaceLabel.pack(side="top", fill="both", expand=True)
+        spaceLabel.image = spaceImage
+        spaceLabel.grid_rowconfigure(0, weight=1)
+        spaceLabel.grid_columnconfigure(0, weight=1)
 
 
         self.frames = {}
         for F in (StartPage, SettingsPage, CityPage, CalendarPage):
             page_name = F.__name__
-            frame = F(parent=container, controller=self)
+            frame = F(parent=spaceLabel, controller=self)
             self.frames[page_name] = frame
 
             # put all of the pages in the same location;
@@ -70,7 +68,7 @@ class StartPage(tk.Frame):
     def tempDown(self):
         if(self.requestedTemperature > 60):
             self.requestedTemperature -= 1
-            self.requestedtTempString = str(self.requestedTemperature)+"° F"
+            self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
             self.upButton.config(state="normal")
         else:
@@ -79,7 +77,7 @@ class StartPage(tk.Frame):
     def tempUp(self):
         if(self.requestedTemperature < 90):
             self.requestedTemperature += 1
-            self.requestedtTempString = str(self.requestedTemperature)+"° F"
+            self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
             self.downButton.config(state="normal")
         else:
@@ -123,7 +121,7 @@ class StartPage(tk.Frame):
         wifiFrame.grid_columnconfigure(0, weight=1)
 
         twsFrame = tk.Label(self)
-        twsFrame.grid(row=1,column=3,sticky='nsew',padx=10, pady=10)
+        twsFrame.grid(row=4,column=3,padx=10, pady=10)
         twsFrame.grid_rowconfigure(0, weight=1)
         twsFrame.grid_columnconfigure(0, weight=1)
 
@@ -133,25 +131,27 @@ class StartPage(tk.Frame):
         wifiLabel.image = wifiImage
         wifiLabel.pack(side='right')
         
+	# Current Time being display top right corner
         now = datetime.datetime.now().time()
 
         timeLabel = tk.Label(wifiFrame, text=now.strftime("%I:%M %p"), font=controller.time_font)
         timeLabel.pack(side='left')
-
-        
-        self.onOffVacayLabel = tk.Label(twsFrame, text="Vacation Mode Off", font=controller.time_font)
-        self.onOffVacayLabel.pack()
-        
+       
         ################################
         #                              #
         #    VACATION_CITY_CALENDAR    #
         #           SETTINGS           #
         ################################
-
-        controlFrame = tk.Label(self)
-        controlFrame.grid(row=0,column=0,sticky='n',pady=10)
-        controlFrame.grid_rowconfigure(1, weight=1)
-        controlFrame.grid_columnconfigure(1, weight=1)
+  
+	# Current date that will also be used as a button
+	# displayed top right corner, nect to time
+        today = datetime.date.today()
+        calButton = tk.Button(wifiFrame, text = today.strftime("%m/%d/%y"),relief = 'flat', command=lambda: controller.show_frame("CalendarPage"))
+        calButton.pack(side='left')
+     
+        self.onOffVacayLabel = tk.Label(twsFrame, text="Vacation Mode Off", font=controller.time_font)
+        self.onOffVacayLabel.pack()
+        
        
         ################################
         #                              #
@@ -160,6 +160,10 @@ class StartPage(tk.Frame):
         #                              #
         ################################
 
+        controlFrame = tk.Label(self)
+        controlFrame.grid(row=0,column=0,sticky='n',pady=10)
+        controlFrame.grid_rowconfigure(1, weight=1)
+        controlFrame.grid_columnconfigure(1, weight=1)
 
         self.systemOnOffButton = tk.Button(controlFrame, text="Off",command= self.systemToggle)
         self.systemOnOffButton.pack(side='left')
@@ -182,13 +186,13 @@ class StartPage(tk.Frame):
         
         # Function to that would change temperture label when city is change
         def selectCity(value):
-            days = [None] * 3
+            days = [None] * 4
             forecast = threeDayForecast(value)
-            for i in range(0,3):
+            for i in range(0,4):
                 days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high + "° F"
-            day1TempLabel.configure(text = days[0])
-            day2TempLabel.configure(text = days[1])
-            day3TempLabel.configure(text = days[2])
+            day1TempLabel.configure(text = days[1])
+            day2TempLabel.configure(text = days[2])
+            day3TempLabel.configure(text = days[3])
     
         
         self.variable = tk.StringVar(self)
@@ -203,8 +207,6 @@ class StartPage(tk.Frame):
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
 #        vacayButton.pack(side='left')
 
-        calButton = tk.Button(controlFrame, text = "Calendar", command=lambda: controller.show_frame("CalendarPage"))
-        calButton.pack(side='left')
 
         ################################
         #                              #
@@ -236,26 +238,28 @@ class StartPage(tk.Frame):
         self.variable.set(locat)
         
         # Uses weather API to get three day forecast
-        days = [None] * 3
+        # Will forecast next three days, not today's forecast
+        days = [None] * 4
         forecast = threeDayForecast(self.variable.get())
-        for i in range(0,3):
-            days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high + "° F"
+        for i in range(1,4):
+            days[i] = forecast[i].day + " " + forecast[i].date + "\t\t" + forecast[i].high + "°F"
             print(locat)
-
+ 
         day1TempString = tk.StringVar()
-        day1TempString.set(days[0])
+        day1TempString.set(days[1])
 
         day2TempString = tk.StringVar()
-        day2TempString.set(days[1])
+        day2TempString.set(days[2])
 
         day3TempString = tk.StringVar()
-        day3TempString.set(days[2])
+        day3TempString.set(days[3])
 
         # Create a frame to store labels of the forcast
         dfFrame = tk.Label(self)
-        dfFrame.grid(row = 1, column = 2,padx=10, pady=10)
-        dfFrame.grid_rowconfigure(0, weight=1)
-        dfFrame.grid_columnconfigure(2, weight=1)
+        dfFrame.grid(row = 1, column = 3,padx=10, pady=10)
+        dfFrame.grid_rowconfigure(1, weight=3)
+        dfFrame.grid_columnconfigure(0, weight=1)
+
 
         # Label for the three day forecast
         day1TempLabel = tk.Label(dfFrame, text=day1TempString.get(), font=controller.day_font)
@@ -276,14 +280,15 @@ class StartPage(tk.Frame):
         ################################
 
 
-        self.currentTempString = str(self.currentTemperature)+""+"° F"
+        self.currentTempString = str(self.currentTemperature)+"°F"
 
-        self.requestedtTempString = str(self.requestedTemperature)+""+"° F"
+        self.requestedtTempString = str(self.requestedTemperature)+"°F"
 
         tempFrame = tk.Label(self)
         tempFrame.grid(row=1,column=0)
         tempFrame.grid_rowconfigure(1, weight=1)
         tempFrame.grid_columnconfigure(0, weight=1)
+
 
         self.currentTempLabel = tk.Label(tempFrame, text=self.currentTempString, font=controller.temp_font)
         self.currentTempLabel.pack(padx=10,pady=10)
@@ -303,16 +308,11 @@ class StartPage(tk.Frame):
         upArrow = tk.PhotoImage(file = "up_arrow.gif")
         downArrow = tk.PhotoImage(file = "down_arrow.gif")
 
-        tempControlFrame = tk.Label(self)
-        tempControlFrame.grid(row=2,column=1, sticky='n', pady = 10)
-        #controlFrame.grid_rowconfigure(0, weight=1)
-        #controlFrame.grid_columnconfigure(1, weight=1)
-
-        self.upButton = tk.Button(tempControlFrame, image = upArrow, command= self.tempUp)
+        self.upButton = tk.Button(tempFrame, image = upArrow, command= self.tempUp)
         self.upButton.image = upArrow
-        self.upButton.pack(padx=10,pady=10,side='left')
-        self.downButton = tk.Button(tempControlFrame, image = downArrow, command= self.tempDown)
-        self.downButton.pack(padx=10,pady=10)
+        self.upButton.pack(padx=50,pady=10,side='left')
+        self.downButton = tk.Button(tempFrame, image = downArrow, command= self.tempDown)
+        self.downButton.pack(padx=50,pady=10)
         self.downButton.image = downArrow
 	
 
