@@ -8,11 +8,14 @@ import tkinter as tk                # python 3
 from tkinter import ttk
 from tkinter import font  as tkfont # python 3
 from tkcalendar import Calendar, DateEntry
-from datetime import date
+import datetime
 import requests
 import json
 #import Tkinter as tk     # python 2
 #import tkFont as tkfont  # python 2
+
+
+
 
 class SampleApp(tk.Tk):
 
@@ -129,9 +132,10 @@ class StartPage(tk.Frame):
         wifiLabel = tk.Label(twsFrame, image = wifiImage)
         wifiLabel.image = wifiImage
         wifiLabel.pack()
+        
+        now = datetime.datetime.now().time()
 
-
-        timeLabel = tk.Label(twsFrame, text="12:00pm", font=controller.time_font)
+        timeLabel = tk.Label(twsFrame, text=now.strftime("%I:%M"), font=controller.time_font)
         timeLabel.pack()
 
         self.onOffLabel = tk.Label(twsFrame, text="System Off", font=controller.time_font)
@@ -162,13 +166,26 @@ class StartPage(tk.Frame):
         #                              #
         ################################
         
+        # Function to that would change temperture label when city is change
+        def selectCity(value):
+            days = [None] * 3
+            forecast = threeDayForecast(value)
+            for i in range(0,3):
+                days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high + "° F"
+            day1TempLabel.configure(text = days[0])
+            day2TempLabel.configure(text = days[1])
+            day3TempLabel.configure(text = days[2])
+    
+        
         self.variable = tk.StringVar(self)
         self.variable.set("City")
         
         cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
-        cityOptions = tk.OptionMenu(vccFrame, self.variable,*cities )
-        cityOptions.pack(fill='x',side='left')
+        cityOptions = tk.OptionMenu(vccFrame, self.variable,*cities ,command=selectCity)
+        cityOptions.pack(fill='x',side='right')
+        
+        # Trying to figure out how to pass data through pages
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
 #        vacayButton.pack(side='left')
 
@@ -203,6 +220,8 @@ class StartPage(tk.Frame):
         reg_code = j['region_code']
         locat = city + ',' + reg_code
         self.variable.set(locat)
+        
+        # Uses weather API to get three day forecast
         days = [None] * 3
         forecast = threeDayForecast(self.variable.get())
         for i in range(0,3):
