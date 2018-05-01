@@ -15,7 +15,8 @@ import json
 #import tkFont as tkfont  # python 2
 
 
-
+# TO DO:
+# - change vacation label to be an airplane, red off green on
 
 class SampleApp(tk.Tk):
 
@@ -30,11 +31,18 @@ class SampleApp(tk.Tk):
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
+        self.title("Den")
+        w = self.winfo_screenwidth()
+        h = self.winfo_screenheight()
+        self.geometry("%dx%d+0+0"%(w,h))
+
+ 
         spaceImage = tk.PhotoImage(file = "space.gif")
         spaceLabel = tk.Label(self, image = spaceImage)
         spaceLabel.place(x=0, y=0, relwidth=1, relheight=1)
         spaceLabel.pack(side="top", fill="both", expand=True)
         spaceLabel.image = spaceImage
+        
         spaceLabel.grid_rowconfigure(0, weight=1)
         spaceLabel.grid_columnconfigure(0, weight=1)
 
@@ -48,8 +56,8 @@ class SampleApp(tk.Tk):
             # put all of the pages in the same location;
             # the one on the top of the stacking order
             # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
-
+            #frame.grid(row=0, column=0, sticky="nsew")
+            frame.place(relx=0, rely=0)
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
@@ -64,6 +72,7 @@ class SampleApp(tk.Tk):
 ################################
 
 class StartPage(tk.Frame):
+
 
     def tempDown(self):
         if(self.requestedTemperature > 60):
@@ -95,11 +104,11 @@ class StartPage(tk.Frame):
         if(self.vacayIsOn == True):
             self.vacayIsOn = False
             self.systemOnOffButton.configure(text = "Off")
-            self.onOffVacayLabel.configure(text = "Vacation Mode Off")
+
         else:
             self.vacayIsOn = True
             self.systemOnOffButton.configure(text = "On")
-            self.onOffVacayLabel.configure(text = "Vacation Mode On")
+
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -115,27 +124,17 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         ################################
 
-        wifiFrame = tk.Label(self)
-        wifiFrame.grid(row=0,column=3,sticky='n', pady=10)
-        wifiFrame.grid_rowconfigure(0, weight=1)
-        wifiFrame.grid_columnconfigure(0, weight=1)
-
-        twsFrame = tk.Label(self)
-        twsFrame.grid(row=4,column=3,padx=10, pady=10)
-        twsFrame.grid_rowconfigure(0, weight=1)
-        twsFrame.grid_columnconfigure(0, weight=1)
-
        	wifiImage = tk.PhotoImage(file = "wifi.gif")
 	
-        wifiLabel = tk.Label(wifiFrame, image = wifiImage)
+        wifiLabel = tk.Label(self, image = wifiImage)
+        wifiLabel.place(relx=0.95, rely = 0.01)
         wifiLabel.image = wifiImage
-        wifiLabel.pack(side='right')
         
 	# Current Time being display top right corner
         now = datetime.datetime.now().time()
 
-        timeLabel = tk.Label(wifiFrame, text=now.strftime("%I:%M %p"), font=controller.time_font)
-        timeLabel.pack(side='left')
+        timeLabel = tk.Label(self, text=now.strftime("%I:%M %p"), font=controller.time_font)
+        timeLabel.place(relx = 0.8,rely = 0.01)
        
         ################################
         #                              #
@@ -146,13 +145,10 @@ class StartPage(tk.Frame):
 	# Current date that will also be used as a button
 	# displayed top right corner, nect to time
         today = datetime.date.today()
-        calButton = tk.Button(wifiFrame, text = today.strftime("%m/%d/%y"),relief = 'flat', command=lambda: controller.show_frame("CalendarPage"))
-        calButton.pack(side='left')
-     
-        self.onOffVacayLabel = tk.Label(twsFrame, text="Vacation Mode Off", font=controller.time_font)
-        self.onOffVacayLabel.pack()
-        
-       
+        calButton = tk.Button(self, text = today.strftime("%m/%d/%y"),relief = 'flat', command=lambda: controller.show_frame("CalendarPage"))
+
+        calButton.place(relx=0.85,rely=0.001)
+
         ################################
         #                              #
         #           CONTROLS           #
@@ -160,21 +156,15 @@ class StartPage(tk.Frame):
         #                              #
         ################################
 
-        controlFrame = tk.Label(self)
-        controlFrame.grid(row=0,column=0,sticky='n',pady=10)
-        controlFrame.grid_rowconfigure(1, weight=1)
-        controlFrame.grid_columnconfigure(1, weight=1)
-
-        self.systemOnOffButton = tk.Button(controlFrame, text="Off",command= self.systemToggle)
-        self.systemOnOffButton.pack(side='left')
-        
+        self.systemOnOffButton = tk.Button(self, text="Off", command= self.systemToggle)
+        self.systemOnOffButton.place(relx=0, rely = 0.01)
         settingsImage = tk.PhotoImage(file = "cog.png")
         
-        settingsButton = tk.Button(controlFrame, image = settingsImage, command=lambda: controller.show_frame("SettingsPage"))
+        settingsButton = tk.Button(self, image = settingsImage, relief= 'flat',command=lambda: controller.show_frame("SettingsPage"))
         settingsButton.image = settingsImage
-        settingsButton.pack(side='left')
-        vacayButton = tk.Button(controlFrame, text="Vaction Mode", command=self.vacayToggle)
-        vacayButton.pack(side='left')
+        settingsButton.place(relx=0.05, rely=0.01)
+        vacayButton = tk.Button(self, text="Vaction Mode", command=self.vacayToggle)
+        vacayButton.place(relx=0.09,rely=0.01)
 
 
         ################################
@@ -200,8 +190,8 @@ class StartPage(tk.Frame):
         
         cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
-        cityOptions = tk.OptionMenu(controlFrame, self.variable,*cities ,command=selectCity)
-        cityOptions.pack(fill='x',side='right')
+        cityOptions = tk.OptionMenu(self, self.variable,*cities ,command=selectCity)
+        cityOptions.place(relx=0.2,rely=0.01)
         
         # Trying to figure out how to pass data through pages
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
@@ -254,22 +244,15 @@ class StartPage(tk.Frame):
         day3TempString = tk.StringVar()
         day3TempString.set(days[3])
 
-        # Create a frame to store labels of the forcast
-        dfFrame = tk.Label(self)
-        dfFrame.grid(row = 1, column = 3,padx=10, pady=10)
-        dfFrame.grid_rowconfigure(1, weight=3)
-        dfFrame.grid_columnconfigure(0, weight=1)
-
-
         # Label for the three day forecast
-        day1TempLabel = tk.Label(dfFrame, text=day1TempString.get(), font=controller.day_font)
-        day1TempLabel.pack()
+        day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font)
+        day1TempLabel.place(relx=0.6, rely=0.3)
 
-        day2TempLabel = tk.Label(dfFrame, text=day2TempString.get(), font=controller.day_font)
-        day2TempLabel.pack(pady=10)
+        day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font)
+        day2TempLabel.place(relx=0.6, rely=0.4)
 
-        day3TempLabel = tk.Label(dfFrame, text=day3TempString.get(), font=controller.day_font)
-        day3TempLabel.pack()
+        day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font)
+        day3TempLabel.place(relx=0.6, rely=0.5)
 
 
         ################################
@@ -281,20 +264,13 @@ class StartPage(tk.Frame):
 
 
         self.currentTempString = str(self.currentTemperature)+"°F"
-
         self.requestedtTempString = str(self.requestedTemperature)+"°F"
 
-        tempFrame = tk.Label(self)
-        tempFrame.grid(row=1,column=0)
-        tempFrame.grid_rowconfigure(1, weight=1)
-        tempFrame.grid_columnconfigure(0, weight=1)
+        self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font)
+        self.currentTempLabel.place(relx=0.2, rely=0.4)
 
-
-        self.currentTempLabel = tk.Label(tempFrame, text=self.currentTempString, font=controller.temp_font)
-        self.currentTempLabel.pack(padx=10,pady=10)
-
-        self.requestedTempLabel = tk.Label(tempFrame, text=self.requestedtTempString, font=controller.temp_font)
-        self.requestedTempLabel.pack(padx=10,pady=10)
+        self.requestedTempLabel = tk.Label(self, text=self.requestedtTempString, font=controller.temp_font)
+        self.requestedTempLabel.place(relx=0.2, rely=0.5)
 
 
         ################################
@@ -308,11 +284,11 @@ class StartPage(tk.Frame):
         upArrow = tk.PhotoImage(file = "up_arrow.gif")
         downArrow = tk.PhotoImage(file = "down_arrow.gif")
 
-        self.upButton = tk.Button(tempFrame, image = upArrow, command= self.tempUp)
+        self.upButton = tk.Button(self, image = upArrow, command= self.tempUp)
         self.upButton.image = upArrow
-        self.upButton.pack(padx=50,pady=10,side='left')
-        self.downButton = tk.Button(tempFrame, image = downArrow, command= self.tempDown)
-        self.downButton.pack(padx=50,pady=10)
+        self.upButton.place(relx=0.2, rely =0.6)
+        self.downButton = tk.Button(self, image = downArrow, command= self.tempDown)
+        self.downButton.place(relx=0.4, rely=0.6)
         self.downButton.image = downArrow
 	
 

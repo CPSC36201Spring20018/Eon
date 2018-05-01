@@ -11,4 +11,4 @@ def location():
     region = data['region']
     return(city,region)
 
-
+print(location())
