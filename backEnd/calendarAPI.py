@@ -55,7 +55,7 @@ def create(requested_temp, start, end, day):
             'timeZone': 'America/Los_Angeles',
         },
         'recurrence': [
-            'RRULE:FREQ=WEEKLY;DAY={0}'.format(day)
+            'RRULE:FREQ=WEEKLY;BYDAY={0}'.format(day)
         ],
         'reminders': {
             'useDefault': True,
@@ -65,11 +65,11 @@ def create(requested_temp, start, end, day):
     event = service.events().insert(calendarId=HVAC, body=event).execute()
 
 def main():
-    delta1 = datetime.timedelta(minutes=30)
+    delta1 = datetime.timedelta(minutes=1)
     delta2 = datetime.timedelta(minutes=60)
     start = datetime.datetime.now() + delta1
     end = start + delta2
-    create('90',start,end,'FR')
+    create('90',start,end,'MO')
 
 if __name__ == '__main__':
     main()
