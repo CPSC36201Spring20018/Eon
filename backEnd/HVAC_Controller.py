@@ -1,7 +1,7 @@
 import RPi.GPIO as gpio
-import tempRead
-import time
-from datetime import datetime
+#import tempRead
+#import time
+#from datetime import datetime
 
 gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)

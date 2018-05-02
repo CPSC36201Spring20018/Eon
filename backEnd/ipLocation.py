@@ -1,14 +1,13 @@
-import re
+import requests
 import json
-from urllib.request import urlopen
 
 def location():
     url = 'http://ipinfo.io/json'
-    response =urlopen(url)
-    data = json.load(response)
+    response =requests.get(url)
+    data = json.loads(response.text)
 
     city = data['city']
     region = data['region']
     return(city,region)
 
-print(location())
+#print(location())

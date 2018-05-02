@@ -13,7 +13,7 @@ def initialize_read():
     store = file.Storage('credentials.json')
     creds = store.get()
     if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
+        flow = client.flow_from_clientsecrets('backEnd/client_secret.json', SCOPES)
         creds = tools.run_flow(flow, store)
     return build('calendar', 'v3', http=creds.authorize(Http()))
 
@@ -22,7 +22,7 @@ def initialize_write():
     store = file.Storage('credential.json')
     creds = store.get()
     if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
+        flow = client.flow_from_clientsecrets('backEnd/client_secret.json', SCOPES)
         creds = tools.run_flow(flow, store)
     return build('calendar', 'v3', http=creds.authorize(Http()))
 
@@ -47,11 +47,11 @@ def create(requested_temp, start, end, day):
     event = {
         'summary': requested_temp,
         'start': {
-            'dateTime': start.isoformat(),
+            'dateTime': start,
             'timeZone': 'America/Los_Angeles',
         },
         'end': {
-            'dateTime': end.isoformat(),
+            'dateTime': end,
             'timeZone': 'America/Los_Angeles',
         },
         'recurrence': [
@@ -61,7 +61,7 @@ def create(requested_temp, start, end, day):
             'useDefault': True,
         },
     }
-    print(event)
+    #print(event)
     event = service.events().insert(calendarId=HVAC, body=event).execute()
 
 def main():
@@ -71,5 +71,5 @@ def main():
     end = start + delta2
     create('90',start,end,'MO')
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()

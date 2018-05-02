@@ -1,8 +1,9 @@
 import backEnd.calendarAPI as calendarAPI
-#import backEnd.HVAC_Controller as HVAC_Controller
+import backEnd.HVAC_Controller as HVAC_Controller
 import backEnd.ipLocation as ipLocation
 import backEnd.weatherAPI as weatherAPI
 #import backEnd.tempRead as tempRead
+import datetime as dt
 
 
 def main():
@@ -19,6 +20,7 @@ def main():
         print(forecast[i].high)
     x.setTemperature(x.getCityTemp(cityLocation))
     print('city was {0}, temperature set to: {1}'.format(cityLocation,x.r_temp))
+    x.createCalendarEvent('60',(dt.datetime.now()+dt.timedelta(minutes=1)).isoformat(),(dt.datetime.now()+dt.timedelta(minutes=60)).isoformat(),'WE')
     calendar = x.getCalendar()
     #print(calendar)
     x.setTemperature(int(calendar['items'][0]['summary']))
@@ -56,6 +58,9 @@ class Controller():
 
     def deleteCalendarEvent(self, eventID):
         calendarAPI.delete(eventID)
+
+    def createCalendarEvent(self, summary, start, end, day):
+        calendarAPI.create(summary, start, end, day)
 
     def setTemperature(self, temp):
         self.r_temp = temp
