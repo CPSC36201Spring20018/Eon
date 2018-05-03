@@ -26,7 +26,7 @@ class SampleApp(tk.Tk):
         # Fonts defined here#
         self.temp_font = tkfont.Font(family='Ariel', size=35, weight="bold", slant="italic")
         self.time_font = tkfont.Font(family='Ariel', size=10)
-        self.day_font = tkfont.Font(family='Ariel', size=12)
+        self.day_font = tkfont.Font(family='Ariel', size=15)
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
@@ -51,13 +51,16 @@ class SampleApp(tk.Tk):
         for F in (StartPage, SettingsPage, CityPage, CalendarPage):
             page_name = F.__name__
             frame = F(parent=spaceLabel, controller=self)
+            #spaceImage = tk.PhotoImage(file = "space.gif")
+            #frame = tk.Label(self, image = spaceImage)
+            #frame.image = spaceImage
             self.frames[page_name] = frame
 
             # put all of the pages in the same location;
             # the one on the top of the stacking order
             # will be the one that is visible.
-            #frame.grid(row=0, column=0, sticky="nsew")
-            frame.place(relx=0, rely=0)
+            frame.grid(row=0, column=0, sticky="nsew")
+            #frame.place(relx=0, rely=0)
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
@@ -114,7 +117,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.vacayIsOn = False
-        self.isOn = False
+        self.isOn = True
         self.currentTemperature = 80
         self.requestedTemperature = 75
         
@@ -124,7 +127,7 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         ################################
 
-       	wifiImage = tk.PhotoImage(file = "wifi.gif")
+       	wifiImage = tk.PhotoImage(file = "wifi.png")
 	
         wifiLabel = tk.Label(self, image = wifiImage)
         wifiLabel.place(relx=0.95, rely = 0.01)
@@ -155,16 +158,24 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         #                              #
         ################################
-
-        self.systemOnOffButton = tk.Button(self, text="Off", command= self.systemToggle)
-        self.systemOnOffButton.place(relx=0, rely = 0.01)
-        settingsImage = tk.PhotoImage(file = "cog.png")
         
+        # Power Button
+        powerButton = tk.PhotoImage(file = "powerOn.png")
+        self.systemOnOffButton = tk.Button(self, image = powerButton, relief = 'flat', command= self.systemToggle)
+        self.systemOnOffButton.image = powerButton
+        self.systemOnOffButton.place(relx=.05, rely = 0.01)
+        
+	# settings button
+        settingsImage = tk.PhotoImage(file = "settings.png")
         settingsButton = tk.Button(self, image = settingsImage, relief= 'flat',command=lambda: controller.show_frame("SettingsPage"))
         settingsButton.image = settingsImage
-        settingsButton.place(relx=0.05, rely=0.01)
-        vacayButton = tk.Button(self, text="Vaction Mode", command=self.vacayToggle)
-        vacayButton.place(relx=0.09,rely=0.01)
+        settingsButton.place(relx=0.1, rely=0.01)
+
+	# vacation button
+        vacayImage = tk.PhotoImage(file = "airplaneModeOff.png")
+        vacayButton = tk.Button(self, image = vacayImage, relief='flat',command=self.vacayToggle)
+        vacayButton.image = vacayImage
+        vacayButton.place(relx=0.2,rely=0.01)
 
 
         ################################
@@ -179,7 +190,7 @@ class StartPage(tk.Frame):
             days = [None] * 4
             forecast = threeDayForecast(value)
             for i in range(0,4):
-                days[i] = forecast[i].day + " " + forecast[i].date + "\n" + forecast[i].high + "° F"
+                days[i] = forecast[i].day + " " + forecast[i].date + "\t\t" + forecast[i].high + "° F"
             day1TempLabel.configure(text = days[1])
             day2TempLabel.configure(text = days[2])
             day3TempLabel.configure(text = days[3])
@@ -246,13 +257,13 @@ class StartPage(tk.Frame):
 
         # Label for the three day forecast
         day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font)
-        day1TempLabel.place(relx=0.6, rely=0.3)
+        day1TempLabel.place(relx=0.55, rely=0.6)
 
         day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font)
-        day2TempLabel.place(relx=0.6, rely=0.4)
+        day2TempLabel.place(relx=0.55, rely=0.67)
 
         day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font)
-        day3TempLabel.place(relx=0.6, rely=0.5)
+        day3TempLabel.place(relx=0.55, rely=0.74)
 
 
         ################################
@@ -267,10 +278,10 @@ class StartPage(tk.Frame):
         self.requestedtTempString = str(self.requestedTemperature)+"°F"
 
         self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font)
-        self.currentTempLabel.place(relx=0.2, rely=0.4)
+        self.currentTempLabel.place(relx=0.55, rely=0.1)
 
         self.requestedTempLabel = tk.Label(self, text=self.requestedtTempString, font=controller.temp_font)
-        self.requestedTempLabel.place(relx=0.2, rely=0.5)
+        self.requestedTempLabel.place(relx=0.2, rely=0.3)
 
 
         ################################
@@ -281,14 +292,14 @@ class StartPage(tk.Frame):
         ################################
 
         # Up and Down Arrows Images
-        upArrow = tk.PhotoImage(file = "up_arrow.gif")
-        downArrow = tk.PhotoImage(file = "down_arrow.gif")
+        upArrow = tk.PhotoImage(file = "up.png")
+        downArrow = tk.PhotoImage(file = "down.png")
 
-        self.upButton = tk.Button(self, image = upArrow, command= self.tempUp)
+        self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempUp)
         self.upButton.image = upArrow
-        self.upButton.place(relx=0.2, rely =0.6)
-        self.downButton = tk.Button(self, image = downArrow, command= self.tempDown)
-        self.downButton.place(relx=0.4, rely=0.6)
+        self.upButton.place(relx=0.1, rely =0.7)
+        self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempDown)
+        self.downButton.place(relx=0.4, rely=0.7)
         self.downButton.image = downArrow
 	
 
@@ -344,8 +355,8 @@ class CalendarPage(tk.Frame):
         button.pack(padx = 10)
         def print_sel():
             print(cal.selection_get())
-        
-        cal = Calendar(self,font="Arial 14", selectmode='day',cursor="hand1", year=2018, month=2, day=5)
+        now = datetime.datetime.now()
+        cal = Calendar(self,font="Arial 14", selectmode='day',cursor="hand1", year=now.year, month=now.month, day=now.day)
         cal.pack(fill="both", expand=True)
         tk.Button(self, text="ok", command=print_sel).pack()
 
