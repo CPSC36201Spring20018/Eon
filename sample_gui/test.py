@@ -35,12 +35,11 @@ class SampleApp(tk.Tk):
         w = self.winfo_screenwidth()
         h = self.winfo_screenheight()
         self.geometry("%dx%d+0+0"%(w,h))
-
+      
  
         spaceImage = tk.PhotoImage(file = "space.gif")
         spaceLabel = tk.Label(self, image = spaceImage)
         spaceLabel.place(x=0, y=0, relwidth=1, relheight=1)
-        spaceLabel.pack(side="top", fill="both", expand=True)
         spaceLabel.image = spaceImage
         
         spaceLabel.grid_rowconfigure(0, weight=1)
@@ -50,7 +49,9 @@ class SampleApp(tk.Tk):
         self.frames = {}
         for F in (StartPage, SettingsPage, CityPage, CalendarPage):
             page_name = F.__name__
-            frame = F(parent=spaceLabel, controller=self)
+            
+            frame = F(parent = spaceLabel, controller=self)
+            
             #spaceImage = tk.PhotoImage(file = "space.gif")
             #frame = tk.Label(self, image = spaceImage)
             #frame.image = spaceImage
@@ -75,7 +76,6 @@ class SampleApp(tk.Tk):
 ################################
 
 class StartPage(tk.Frame):
-
 
     def tempDown(self):
         if(self.requestedTemperature > 60):
@@ -133,7 +133,10 @@ class StartPage(tk.Frame):
         self.isOn = True
         self.currentTemperature = 80
         self.requestedTemperature = 75
-        
+        spaceImage = tk.PhotoImage(file = "space.gif")
+        spaceLabel = tk.Label(self, image = spaceImage)
+        spaceLabel.place(x=0, y=0, relwidth=1, relheight=1)
+        spaceLabel.image = spaceImage
         ################################
         #                              #
         #       TIME_WIFI_SYSTEM       #
@@ -215,7 +218,7 @@ class StartPage(tk.Frame):
         cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
         cityOptions = tk.OptionMenu(self, self.variable,*cities ,command=selectCity)
-        cityOptions.place(relx=0.2,rely=0.01)
+        cityOptions.place(relx=0.2,rely=0.02)
         
         # Trying to figure out how to pass data through pages
 #        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
