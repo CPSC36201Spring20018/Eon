@@ -2,7 +2,7 @@ import backEnd.calendarAPI as calendarAPI
 import backEnd.HVAC_Controller as HVAC_Controller
 import backEnd.ipLocation as ipLocation
 import backEnd.weatherAPI as weatherAPI
-#import backEnd.tempRead as tempRead
+import backEnd.tempRead as tempRead
 import datetime as dt
 
 
@@ -36,9 +36,12 @@ def main():
 class Controller():
 
     def __init__(self):
-        r_temp = 0
-        event_list = None
-        personal_location = None
+        self.requested_temperature = 0
+        self.current_temperature = 0
+        self.threshold = 3
+        self.isH = False
+        self.isA = False
+        self.isDisable = False
 
     def getLocation(self):
         city, state = ipLocation.location()
@@ -47,11 +50,20 @@ class Controller():
     def getForecast(self, location):
         return weatherAPI.threeDayForecast(location)
 
-    def getCityTemp(self, location):
+    def getCityTemperature(self, location):
         return weatherAPI.locationTemperature(location)
 
-    def getTemperature(self):
-        return tempRead.read_temp()
+    def setCurrentTemperature(self):
+        self.current_temperature = int(tempRead.read_temp()[1])
+
+    def getCurrentTemperature(self):
+        return self.current_temperature
+
+    def setRequestedTemperature(self, temp):
+        self.requested_temperature = temp
+
+    def getRequestedTemperature(self):
+        return self.requested_temperature
 
     def getCalendar(self):
         return calendarAPI.list()
@@ -62,20 +74,39 @@ class Controller():
     def createCalendarEvent(self, summary, start, end, day):
         calendarAPI.create(summary, start, end, day)
 
-    def setTemperature(self, temp):
-        self.r_temp = temp
-
     def activateAC(self):
-        HVAC_Controller.ACOn()
+        if not self.isDisable:
+            self.isA = HVAC_Controller.ACOn()
+        else:
+            print("System Disabled")
 
     def deactivateAC(self):
-        HVAC_Controller.ACOff()
+        self.isA = HVAC_Controller.ACOff()
 
     def activateHeat(self):
-        HVAC_Controller.HeatOn()
+        if not self.isDisable:
+            self.isH = HVAC_Controller.HeatOn()
+        else:
+            print("System Disabled")
 
     def deactivateHeat(self):
-        HVAC_Controller.HeatOff()
+        self.isH = HVAC_Controller.HeatOff()
 
-if __name__ == "__main__":
-    main()
+    def isAC(self):
+        return self.isA
+
+    def isHeat(self):
+        return self.isH
+
+    def Disable(self):
+        if self.isAC():
+            self.deactivateAC()
+        if self.isHeat():
+            self.deactivateHeat()
+        self.isDisable = True
+
+    def Enable(self):
+        self.isDisable = False
+
+#if __name__ == "__main__":
+#    main()
