@@ -98,19 +98,32 @@ class StartPage(tk.Frame):
     def systemToggle(self):
         if(self.isOn == True):
             self.isOn = False
+            powerImage = tk.PhotoImage(file = "powerOff.png")
+            self.systemOnOffButton.configure(image = powerImage)
+            self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "Off")
         else:
             self.isOn = True
+            powerImage = tk.PhotoImage(file = "powerOn.png")
+            self.systemOnOffButton.configure(image = powerImage)
+            self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "On")
 
     def vacayToggle(self):
         if(self.vacayIsOn == True):
             self.vacayIsOn = False
+            vacayImage = tk.PhotoImage(file ="airplaneModeOff.png")
+            self.vacayButton.configure(image = vacayImage)
+            self.vacayButton.photo = vacayImage
             self.systemOnOffButton.configure(text = "Off")
 
         else:
             self.vacayIsOn = True
             self.systemOnOffButton.configure(text = "On")
+            vacayImage = tk.PhotoImage(file ="airplaneModeOn.png")
+            self.vacayButton.configure(image = vacayImage)
+            self.vacayButton.photo = vacayImage
+
 
 
     def __init__(self, parent, controller):
@@ -137,7 +150,7 @@ class StartPage(tk.Frame):
         now = datetime.datetime.now().time()
 
         timeLabel = tk.Label(self, text=now.strftime("%I:%M %p"), font=controller.time_font)
-        timeLabel.place(relx = 0.8,rely = 0.01)
+        timeLabel.place(relx = 0.8,rely = 0.02)
        
         ################################
         #                              #
@@ -150,7 +163,7 @@ class StartPage(tk.Frame):
         today = datetime.date.today()
         calButton = tk.Button(self, text = today.strftime("%m/%d/%y"),relief = 'flat', command=lambda: controller.show_frame("CalendarPage"))
 
-        calButton.place(relx=0.85,rely=0.001)
+        calButton.place(relx=0.85,rely=0.015)
 
         ################################
         #                              #
@@ -173,9 +186,9 @@ class StartPage(tk.Frame):
 
 	# vacation button
         vacayImage = tk.PhotoImage(file = "airplaneModeOff.png")
-        vacayButton = tk.Button(self, image = vacayImage, relief='flat',command=self.vacayToggle)
-        vacayButton.image = vacayImage
-        vacayButton.place(relx=0.2,rely=0.01)
+        self.vacayButton = tk.Button(self, image = vacayImage, relief='flat',command=self.vacayToggle)
+        self.vacayButton.image = vacayImage
+        self.vacayButton.place(relx=0.15,rely=0.01)
 
 
         ################################
