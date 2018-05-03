@@ -11,7 +11,7 @@ for i in range(1,4):
     print(f[i].high)
 c.setRequestedTemperature(c.getCurrentTemperature() + c.threshold + 1)
 print('Current Temperature: {}'.format(c.getCurrentTemperature()))
-if not c.isHeat() and (c.getCurrentTemperature() + c.threshold < c.getRequestedTemperature()):
+if not c.isHeat() and (c.getCurrentTemperature() - c.threshold < c.getRequestedTemperature()):
     if c.isAC():
         c.deactivateAC()
     c.activateHeat()
@@ -23,7 +23,7 @@ while True and not c.isDisable:
     c.setRequestedTemperature(c.getRequestedTemperature()-1)
     time.sleep(1)
 c.setRequestedTemperature(c.getCurrentTemperature() - c.threshold - 1)
-if not c.isAC() and (c.getCurrentTemperature() - c.threshold > c.getRequestedTemperature()):
+if not c.isAC() and (c.getCurrentTemperature() + c.threshold > c.getRequestedTemperature()):
     if c.isHeat():
         c.deactivateHeat()
     c.activateAC()
@@ -37,7 +37,7 @@ while True and not c.isDisable:
 c.Disable()
 c.setRequestedTemperature(c.getCurrentTemperature() + c.threshold + 1)
 print('Current Temperature: {}'.format(c.getCurrentTemperature()))
-if not c.isHeat() and (c.getCurrentTemperature() + c.threshold < c.getRequestedTemperature()):
+if not c.isHeat() and (c.getCurrentTemperature() - c.threshold < c.getRequestedTemperature()):
     if c.isAC():
         c.deactivateAC()
     c.activateHeat()
@@ -49,7 +49,7 @@ while True and not c.isDisable:
     c.setRequestedTemperature(c.getRequestedTemperature()-1)
     time.sleep(1)
 c.setRequestedTemperature(c.getCurrentTemperature() - c.threshold - 1)
-if not c.isAC() and (c.getCurrentTemperature() - c.threshold > c.getRequestedTemperature()):
+if not c.isAC() and (c.getCurrentTemperature() + c.threshold > c.getRequestedTemperature()):
     if c.isHeat():
         c.deactivateHeat()
     c.activateAC()

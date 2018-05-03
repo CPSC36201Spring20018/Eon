@@ -42,6 +42,7 @@ class Controller():
         self.isH = False
         self.isA = False
         self.isDisable = False
+        self.isVacation = False
 
     def getLocation(self):
         city, state = ipLocation.location()
@@ -84,7 +85,7 @@ class Controller():
         self.isA = HVAC_Controller.ACOff()
 
     def activateHeat(self):
-        if not self.isDisable:
+        if not self.isDisable or self.isVacation:
             self.isH = HVAC_Controller.HeatOn()
         else:
             print("System Disabled")
@@ -107,6 +108,15 @@ class Controller():
 
     def Enable(self):
         self.isDisable = False
+
+    def setVacation(self):
+        if not self.isVacation:
+            self.setRequestedTemperature(40)
+            self.isVacation = True
+            self.Disable()
+        else:
+            self.isVacation = False
+            self.Enable()
 
 #if __name__ == "__main__":
 #    main()
