@@ -77,18 +77,18 @@ class StartPage(tk.Frame):
             self.requestedTemperature -= 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
-            self.upButton.config(state="normal")
+            self.downButton.config(state="normal")
         else:
-            self.downButton.config(state="disable")
+            self.upButton.config(state="disable")
 
     def tempDown(self):
         if(self.requestedTemperature < 90):
             self.requestedTemperature += 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
-            self.downButton.config(state="normal")
+            self.upButton.config(state="normal")
         else:
-            self.upButton.config(state="disable")
+            self.downButton.config(state="disable")
 
     def systemToggle(self):
         if(self.isOn == True):
@@ -127,7 +127,7 @@ class StartPage(tk.Frame):
         self.vacayIsOn = False
         self.isOn = True
         self.currentTemperature = 80
-        self.requestedTemperature = 75
+        self.requestedTemperature = 70
         backgroundImage = tk.PhotoImage(file = "bg.png")
         background = tk.Label(self, image = backgroundImage)
         background.place(x=0, y=0, relwidth=1, relheight=1)
@@ -208,19 +208,12 @@ class StartPage(tk.Frame):
         self.variable = tk.StringVar(self)
         self.variable.set("City")
         
-        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey", "Garden Grove"]
+        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
         cityOptions = tk.OptionMenu(self, self.variable,*cities ,command=selectCity)
         cityOptions.configure(fg = 'white', bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white', relief ='flat')
         cityOptions["menu"].config(fg = 'white', bg = 'black', selectcolor = 'black',activebackground='#333333', activeforeground = 'white')
         cityOptions.place(relx=0.2,rely=0.02)
-
-
-        
-        # Trying to figure out how to pass data through pages
-#        vacayButton = tk.Button(vccFrame, text="Choose City", command=lambda: controller.show_frame("CityPage"))
-#        vacayButton.pack(side='left')
-
 
         ################################
         #                              #
@@ -255,12 +248,15 @@ class StartPage(tk.Frame):
         # Uses weather API to get three day forecast
         # Will forecast next three days, not today's forecast
         days = [None] * 4
+        temp = [None] * 4
         forecast = threeDayForecast(self.variable.get())
-        for i in range(1,4):
-            days[i] = forecast[i].day + " " + forecast[i].text + "\t" + forecast[i].high + "°F"
+
+        for i in range(0,4):
+            days[i] = forecast[i].day
+            temp[i] = forecast[i].high + "°F"
             print(locat)
         weatherImageArray = [None] * 4
-        for i in range(1,4):
+        for i in range(0,4):
             weatherImageSearch = forecast[i].text
             if weatherImageSearch == "Sunny":
                 weatherImage = tk.PhotoImage(file = "sunny.png")
@@ -275,27 +271,39 @@ class StartPage(tk.Frame):
             weatherLabel.image =  weatherImage
             weatherImageArray[i] = weatherLabel
 
+        day1String = tk.StringVar()
+        day1String.set(days[1])
         day1TempString = tk.StringVar()
-        day1TempString.set(days[1])
+        day1TempString.set(temp[1])
 
+        day2String = tk.StringVar()
+        day2String.set(days[2])
         day2TempString = tk.StringVar()
-        day2TempString.set(days[2])
+        day2TempString.set(temp[2])
 
+        day3String = tk.StringVar()
+        day3String.set(days[3])
         day3TempString = tk.StringVar()
-        day3TempString.set(days[3])
+        day3TempString.set(temp[3])
 
         # Label for the three day forecast
+        day1Label = tk.Label(self, text=day1String.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day1TempLabel.place(relx=0.55, rely=0.65)
-        weatherImageArray[1].place(relx=0.9, rely=0.65)
+        day1TempLabel.place(relx=0.85, rely=0.65)
+        day1Label.place(relx=0.55, rely=0.65)
+        weatherImageArray[1].place(relx=0.725, rely=0.65)
 
+        day2Label = tk.Label(self, text=day2String.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day2TempLabel.place(relx=0.55, rely=0.75)
-        weatherImageArray[2].place(relx=0.9, rely=0.75)
+        day2TempLabel.place(relx =0.85, rely = 0.75)
+        day2Label.place(relx=0.55, rely=0.75)
+        weatherImageArray[2].place(relx=0.725, rely=0.75)
 
+        day3Label = tk.Label(self, text=day3String.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day3TempLabel.place(relx=0.55, rely=0.85)
-        weatherImageArray[3].place(relx=0.9, rely=0.85)
+        day3TempLabel.place(relx=0.85, rely=0.85)
+        day3Label.place(relx=0.55, rely=0.85)
+        weatherImageArray[3].place(relx=0.725, rely=0.85)
 
 
         ################################
@@ -308,12 +316,13 @@ class StartPage(tk.Frame):
 
 	# outdoor temperature
 
-        outdoorTextLabel = tk.Label(self, text = "Outdoor",font = ("Calibri, 17"),bg = 'black',fg = 'white')
+        outdoorTextLabel = tk.Label(self, text = self.variable.get(),font = ("Calibri, 15"),bg = 'black',fg = 'white')
         outdoorTextLabel.place(relx=0.55, rely=0.5)
-        self.currentTempString = str(self.currentTemperature)+"°F"
+        self.currentTemperature = temp[0]
+        self.currentTempString = str(self.currentTemperature)
         self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font, bg = 'black',fg = 'white')
         self.currentTempLabel.config(font = ("Calibri", 17))
-        self.currentTempLabel.place(relx=0.9, rely=0.5)
+        self.currentTempLabel.place(relx=0.85, rely=0.5)
 
 	# indoor temperature
         self.requestedtTempString = str(self.requestedTemperature)+"°F"
