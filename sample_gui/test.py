@@ -50,7 +50,7 @@ class SampleApp(tk.Tk):
 
 
         self.frames = {}
-        for F in (StartPage, SettingsPage, CityPage, CalendarPage):
+        for F in (StartPage, SettingsPage, CalendarPage):
             page_name = F.__name__
 
             frame = F(parent = container, controller=self)
@@ -266,35 +266,35 @@ class StartPage(tk.Frame):
 
         day1String = tk.StringVar()
         day1String.set(days[1])
-        day1TempString = tk.StringVar()
-        day1TempString.set(temp[1])
+        day1HighTempString = tk.StringVar()
+        day1HighTempString.set(highTemp[1])
 
         day2String = tk.StringVar()
         day2String.set(days[2])
-        day2TempString = tk.StringVar()
-        day2TempString.set(temp[2])
+        day2HighTempString = tk.StringVar()
+        day2HighTempString.set(highTemp[2])
 
         day3String = tk.StringVar()
         day3String.set(days[3])
-        day3TempString = tk.StringVar()
-        day3TempString.set(temp[3])
+        day3HighTempString = tk.StringVar()
+        day3HighTempString.set(highTemp[3])
 
         # Label for the three day forecast
         day1Label = tk.Label(self, text=day1String.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day1TempLabel.place(relx=0.85, rely=0.65)
+        day1HighTempLabel = tk.Label(self, text=day1HighTempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
+        day1HighTempLabel.place(relx=0.85, rely=0.65)
         day1Label.place(relx=0.55, rely=0.65)
         weatherImageArray[1].place(relx=0.725, rely=0.65)
 
         day2Label = tk.Label(self, text=day2String.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day2TempLabel.place(relx =0.85, rely = 0.75)
+        day2HighTempLabel = tk.Label(self, text=day2HighTempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
+        day2HighTempLabel.place(relx =0.85, rely = 0.75)
         day2Label.place(relx=0.55, rely=0.75)
         weatherImageArray[2].place(relx=0.725, rely=0.75)
 
         day3Label = tk.Label(self, text=day3String.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
-        day3TempLabel.place(relx=0.85, rely=0.85)
+        day3HighTempLabel = tk.Label(self, text=day3HighTempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
+        day3HighTempLabel.place(relx=0.85, rely=0.85)
         day3Label.place(relx=0.55, rely=0.85)
         weatherImageArray[3].place(relx=0.725, rely=0.85)
 
@@ -311,11 +311,12 @@ class StartPage(tk.Frame):
 
         outdoorTextLabel = tk.Label(self, text = self.variable.get(),font = ("Calibri, 15"),bg = 'black',fg = 'white')
         outdoorTextLabel.place(relx=0.55, rely=0.5)
-        self.currentTemperature = temp[0]
+        self.currentTemperature = highTemp[0]
         self.currentTempString = str(self.currentTemperature)
         self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font, bg = 'black',fg = 'white')
         self.currentTempLabel.config(font = ("Calibri", 17))
         self.currentTempLabel.place(relx=0.85, rely=0.5)
+        weatherImageArray[0].place(relx=0.8, rely=0.5)
 
 	# indoor temperature
         self.requestedtTempString = str(self.requestedTemperature)+"°F"
@@ -358,29 +359,6 @@ class SettingsPage(tk.Frame):
         button = tk.Button(self, text="Go Back",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
-
-
-class CityPage(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        #
-        # label = tk.Label(self, text="This is cities page!", font=controller.temp_font)
-        # label.grid(row = 0, column = 0)
-
-        variable = tk.StringVar(self)
-        variable.set("City") # default value
-
-
-        button = tk.Button(self, text="Go Back",
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack(padx = 10)
-
-
-        cityOptions = tk.OptionMenu(self, variable, "Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil"
-        "Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey")
-        cityOptions.pack(fill='x')
 
 class CalendarPage(tk.Frame):
 
