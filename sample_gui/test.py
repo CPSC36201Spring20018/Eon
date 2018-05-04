@@ -253,12 +253,14 @@ class StartPage(tk.Frame):
             weatherImageSearch = forecast[i].text
             if weatherImageSearch == "Sunny":
                 weatherImage = tk.PhotoImage(file = "sunny.png")
-            if weatherImageSearch == "Partly Cloudy":
+            elif weatherImageSearch == "Partly Cloudy":
                 weatherImage = tk.PhotoImage(file = "partlyCloudy.png")
-            if weatherImageSearch == "Mostly Cloudy":
+            elif weatherImageSearch == "Mostly Cloudy":
                 weatherImage = tk.PhotoImage(file = "mostlyCloudy.png")
-            if weatherImageSearch == "Cloudy":
+            elif weatherImageSearch == "Cloudy":
                 weatherImage = tk.PhotoImage(file = "cloudy.png")
+            else:
+                weatherImage = None
 
             weatherLabel = tk.Label(self, image =  weatherImage, bg = 'black')
             weatherLabel.image =  weatherImage
@@ -267,17 +269,17 @@ class StartPage(tk.Frame):
         day1String = tk.StringVar()
         day1String.set(days[1])
         day1HighTempString = tk.StringVar()
-        day1HighTempString.set(highTemp[1])
+        day1HighTempString.set(temp[1])
 
         day2String = tk.StringVar()
         day2String.set(days[2])
         day2HighTempString = tk.StringVar()
-        day2HighTempString.set(highTemp[2])
+        day2HighTempString.set(temp[2])
 
         day3String = tk.StringVar()
         day3String.set(days[3])
         day3HighTempString = tk.StringVar()
-        day3HighTempString.set(highTemp[3])
+        day3HighTempString.set(temp[3])
 
         # Label for the three day forecast
         day1Label = tk.Label(self, text=day1String.get(), font=controller.day_font, bg = 'black',fg = 'white')
@@ -311,7 +313,7 @@ class StartPage(tk.Frame):
 
         outdoorTextLabel = tk.Label(self, text = self.variable.get(),font = ("Calibri, 15"),bg = 'black',fg = 'white')
         outdoorTextLabel.place(relx=0.55, rely=0.5)
-        self.currentTemperature = highTemp[0]
+        self.currentTemperature = temp[0]
         self.currentTempString = str(self.currentTemperature)
         self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font, bg = 'black',fg = 'white')
         self.currentTempLabel.config(font = ("Calibri", 17))
