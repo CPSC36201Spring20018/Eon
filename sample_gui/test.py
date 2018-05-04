@@ -201,17 +201,14 @@ class StartPage(tk.Frame):
         def selectCity(value):
             days = [None] * 4
             forecast = threeDayForecast(value)
-            for i in range(0,4):
-                days[i] = forecast[i].day + " " + forecast[i].date + "\t\t" + forecast[i].high + "° F"
-            day1TempLabel.configure(text = days[1])
-            day2TempLabel.configure(text = days[2])
-            day3TempLabel.configure(text = days[3])
+            self.requestedTemperature = forecast[0].high
+            self.requestedTempLabel.configure(text = str(self.requestedTemperature) +"°F")
+            self.requestedTemperature = int(self.requestedTemperature)
     
-        
         self.variable = tk.StringVar(self)
         self.variable.set("City")
         
-        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
+        cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey", "Garden Grove"]
 
         cityOptions = tk.OptionMenu(self, self.variable,*cities ,command=selectCity)
         cityOptions.configure(fg = 'white', bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white', relief ='flat')
@@ -244,7 +241,8 @@ class StartPage(tk.Frame):
             condition = location.condition
             temperature = condition.temp
             return temperature
-        
+
+
         # Get current location based off of IP address
         send_url = 'http://freegeoip.net/json'
         r = requests.get(send_url)
@@ -259,9 +257,24 @@ class StartPage(tk.Frame):
         days = [None] * 4
         forecast = threeDayForecast(self.variable.get())
         for i in range(1,4):
-            days[i] = forecast[i].day + " " + forecast[i].date + "\t" + forecast[i].high + "°F"
+            days[i] = forecast[i].day + " " + forecast[i].text + "\t" + forecast[i].high + "°F"
             print(locat)
- 
+        weatherImageArray = [None] * 4
+        for i in range(1,4):
+            weatherImageSearch = forecast[i].text
+            if weatherImageSearch == "Sunny":
+                weatherImage = tk.PhotoImage(file = "sunny.png")
+            if weatherImageSearch == "Partly Cloudy":
+                weatherImage = tk.PhotoImage(file = "partlyCloudy.png")
+            if weatherImageSearch == "Mostly Cloudy":
+                weatherImage = tk.PhotoImage(file = "mostlyCloudy.png")
+            if weatherImageSearch == "Cloudy":
+                weatherImage = tk.PhotoImage(file = "cloudy.png")
+           
+            weatherLabel = tk.Label(self, image =  weatherImage, bg = 'black')
+            weatherLabel.image =  weatherImage
+            weatherImageArray[i] = weatherLabel
+
         day1TempString = tk.StringVar()
         day1TempString.set(days[1])
 
@@ -274,12 +287,15 @@ class StartPage(tk.Frame):
         # Label for the three day forecast
         day1TempLabel = tk.Label(self, text=day1TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day1TempLabel.place(relx=0.55, rely=0.65)
+        weatherImageArray[1].place(relx=0.9, rely=0.65)
 
         day2TempLabel = tk.Label(self, text=day2TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day2TempLabel.place(relx=0.55, rely=0.75)
+        weatherImageArray[2].place(relx=0.9, rely=0.75)
 
         day3TempLabel = tk.Label(self, text=day3TempString.get(), font=controller.day_font, bg = 'black',fg = 'white')
         day3TempLabel.place(relx=0.55, rely=0.85)
+        weatherImageArray[3].place(relx=0.9, rely=0.85)
 
 
         ################################
