@@ -318,9 +318,9 @@ class StartPage(tk.Frame):
 
         self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempUp, bg = 'black', highlightbackground = 'black', highlightcolor = 'black',activebackground='#333333', activeforeground = 'white')
         self.upButton.image = upArrow
-        self.upButton.place(relx=0.09, rely =0.7)
+        self.upButton.place(relx=0.09, rely =0.55)
         self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempDown, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
-        self.downButton.place(relx=0.35, rely=0.7)
+        self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
 	
 
