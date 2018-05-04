@@ -1,8 +1,14 @@
 ##############################################
-# Created on: 
-# Written by: 
+# Created on:
+# Written by:
 #
 ##############################################
+# sys is needed to go back to parent directory
+import sys
+sys.path.append('../')
+import controller as cont
+
+# UI libs
 from weather import Weather, Unit
 import tkinter as tk                # python 3
 from tkinter import ttk
@@ -23,7 +29,9 @@ class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-     
+
+        print('Starting up...')
+
         # Fonts defined here#
         self.temp_font = tkfont.Font(family= 'Calibri', size=40)
         self.time_font = tkfont.Font(family='Calibri', size=10)
@@ -36,7 +44,7 @@ class SampleApp(tk.Tk):
         self.geometry("800x480")
 
         container = tk.Label(self)
-        container.place(x=0, y=0, relwidth=1, relheight=1)        
+        container.place(x=0, y=0, relwidth=1, relheight=1)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
@@ -44,9 +52,9 @@ class SampleApp(tk.Tk):
         self.frames = {}
         for F in (StartPage, SettingsPage, CityPage, CalendarPage):
             page_name = F.__name__
-            
+
             frame = F(parent = container, controller=self)
-            
+
             #spaceImage = tk.PhotoImage(file = "space.gif")
             #frame = tk.Label(self, image = spaceImage)
             #frame.image = spaceImage
@@ -132,6 +140,10 @@ class StartPage(tk.Frame):
         background = tk.Label(self, image = backgroundImage)
         background.place(x=0, y=0, relwidth=1, relheight=1)
         background.image = backgroundImage
+
+        # Instance Of Controller class
+        controll = cont.Controller();
+
         ################################
         #                              #
         #       TIME_WIFI_SYSTEM       #
@@ -139,24 +151,24 @@ class StartPage(tk.Frame):
         ################################
 
        	wifiImage = tk.PhotoImage(file = "wifi.png")
-	
+
         wifiLabel = tk.Label(self, image = wifiImage, bg = 'black')
         wifiLabel.place(relx=0.95, rely = 0.01)
         wifiLabel.image = wifiImage
-        
+
 	# Current Time being display top right corner
         now = datetime.datetime.now().time()
 
         timeLabel = tk.Label(self, text=now.strftime("%I:%M %p"), font=controller.time_font, bg = 'black', fg = 'white')
         timeLabel.config(font = ("Calibri", 17))
         timeLabel.place(relx = 0.55,rely = 0.35)
-       
+
         ################################
         #                              #
         #    VACATION_CITY_CALENDAR    #
         #           SETTINGS           #
         ################################
-  
+
 	# Current date that will also be used as a button
 	# displayed top right corner, nect to time
         today = datetime.date.today()
@@ -170,13 +182,13 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         #                              #
         ################################
-        
+
         # Power Button
         powerButton = tk.PhotoImage(file = "powerOn.png")
         self.systemOnOffButton = tk.Button(self, image = powerButton, relief = 'flat', command= self.systemToggle, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.systemOnOffButton.image = powerButton
         self.systemOnOffButton.place(relx=.05, rely = 0.01)
-        
+
 	# settings button
         settingsImage = tk.PhotoImage(file = "settings.png")
         settingsButton = tk.Button(self, image = settingsImage, relief= 'flat',command=lambda: controller.show_frame("SettingsPage"), bg ='black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
@@ -196,18 +208,18 @@ class StartPage(tk.Frame):
         #       TO_DISPLAY_CITY        #
         #                              #
         ################################
-        
+
         # Function to that would change temperture label when city is change
         def selectCity(value):
             days = [None] * 4
-            forecast = threeDayForecast(value)
+            forecast = controll.getForecast(value)
             self.requestedTemperature = forecast[0].high
             self.requestedTempLabel.configure(text = str(self.requestedTemperature) +"°F")
             self.requestedTemperature = int(self.requestedTemperature)
-    
+
         self.variable = tk.StringVar(self)
         self.variable.set("City")
-        
+
         cities = ["Los Angeles,CA", "Las Vegas,NV", "New York,NY","Miami,FL","SEOUL, South Korea","São Paulo, Brazil","Bombay, India", "JAKARTA, Indonesia","Karachi, Pakistan","MOSKVA (Moscow), Russia","Istanbul, Turkey"]
 
         cityOptions = tk.OptionMenu(self, self.variable,*cities ,command=selectCity)
@@ -221,40 +233,21 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         ################################
 
-        # 3 Day forecast
-        def threeDayForecast(loc):
-            weather = Weather(unit=Unit.FAHRENHEIT)
-            location = weather.lookup_by_location(loc)
-            forecasts = location.forecast
-            return forecasts
-    
-        def locationTemperature(loc):
-            weather = Weather(unit=Unit.FAHRENHEIT)
-            location = weather.lookup_by_location(loc)
-            condition = location.condition
-            temperature = condition.temp
-            return temperature
-
 
         # Get current location based off of IP address
-        send_url = 'http://freegeoip.net/json'
-        r = requests.get(send_url)
-        j = json.loads(r.text)
-        city = j['city']
-        reg_code = j['region_code']
-        locat = city + ',' + reg_code
-        self.variable.set(locat)
-        
+        self.variable.set(controll.getLocation())
+
         # Uses weather API to get three day forecast
         # Will forecast next three days, not today's forecast
         days = [None] * 4
         temp = [None] * 4
-        forecast = threeDayForecast(self.variable.get())
+        forecast = controll.getForecast(self.variable.get())
 
         for i in range(0,4):
             days[i] = forecast[i].day
             temp[i] = forecast[i].high + "°F"
-            print(locat)
+
+
         weatherImageArray = [None] * 4
         for i in range(0,4):
             weatherImageSearch = forecast[i].text
@@ -266,7 +259,7 @@ class StartPage(tk.Frame):
                 weatherImage = tk.PhotoImage(file = "mostlyCloudy.png")
             if weatherImageSearch == "Cloudy":
                 weatherImage = tk.PhotoImage(file = "cloudy.png")
-           
+
             weatherLabel = tk.Label(self, image =  weatherImage, bg = 'black')
             weatherLabel.image =  weatherImage
             weatherImageArray[i] = weatherLabel
@@ -347,7 +340,7 @@ class StartPage(tk.Frame):
         self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempDown, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
-	
+
 
 ###################################
 #                                 #
@@ -390,14 +383,14 @@ class CityPage(tk.Frame):
         cityOptions.pack(fill='x')
 
 class CalendarPage(tk.Frame):
-    
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        
+
         button = tk.Button(self, text="Go Back",
                            command=lambda: controller.show_frame("StartPage"))
-            
+
         button.pack(padx = 10)
         def print_sel():
             print(cal.selection_get())

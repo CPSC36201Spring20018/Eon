@@ -1,8 +1,8 @@
-import backEnd.calendarAPI as calendarAPI
-import backEnd.HVAC_Controller as HVAC_Controller
+# import backEnd.calendarAPI as calendarAPI   # Needed for googleapis
+# import backEnd.HVAC_Controller as HVAC_Controller  # Needed for GPIO
 import backEnd.ipLocation as ipLocation
 import backEnd.weatherAPI as weatherAPI
-import backEnd.tempRead as tempRead
+# import backEnd.tempRead as tempRead # Needed for GPIO
 import datetime as dt
 
 
