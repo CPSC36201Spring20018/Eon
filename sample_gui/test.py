@@ -305,6 +305,12 @@ class StartPage(tk.Frame):
                 weatherImage = tk.PhotoImage(file = "mostlyCloudy.png")
             elif weatherImageSearch == "Cloudy":
                 weatherImage = tk.PhotoImage(file = "cloudy.png")
+            elif weatherImageSearch == "Breezy":
+                weatherImage = tk.PhotoImage(file = "wind.png")
+            elif weatherImageSearch == "Windy":
+                weatherImage = tk.PhotoImage(file = "windy.png")
+            elif weatherImageSearch == "Rainy":
+                weatherImage = tk.PhotoImage(file = "rain.png")
             else:
                 weatherImage = None
 
