@@ -100,7 +100,7 @@ class StartPage(tk.Frame):
 
     # Custom timer without using any multithreading
     def starTimer(self):
-        self.timer(5)
+        self.timer(30)
 
     def timer(self,seconds):
         s = int(self.time)
@@ -114,6 +114,8 @@ class StartPage(tk.Frame):
         if(s == seconds):
             s = 0
             self.time = str(s)
+            self.now = datetime.datetime.now().time()
+            self.timeLabel.configure(text=self.now.strftime("%I:%M %p"))
             print('Done')
 
 
@@ -175,11 +177,11 @@ class StartPage(tk.Frame):
         wifiLabel.image = wifiImage
 
 	# Current Time being display top right corner
-        now = datetime.datetime.now().time()
+        self.now = datetime.datetime.now().time()
 
-        timeLabel = tk.Label(self, text=now.strftime("%I:%M %p"), font=controller.time_font, bg = 'black', fg = 'white')
-        timeLabel.config(font = ("Calibri", 17))
-        timeLabel.place(relx = 0.55,rely = 0.35)
+        self.timeLabel = tk.Label(self, text=self.now.strftime("%I:%M %p"), font=controller.time_font, bg = 'black', fg = 'white')
+        self.timeLabel.config(font = ("Calibri", 17))
+        self.timeLabel.place(relx = 0.55,rely = 0.35)
 
         ################################
         #                              #
@@ -258,12 +260,12 @@ class StartPage(tk.Frame):
         # Uses weather API to get three day forecast
         # Will forecast next three days, not today's forecast
         days = [None] * 4
-        highTemp = [None] * 4
+        temp = [None] * 4
         forecast = controll.getForecast(self.variable.get())
 
         for i in range(0,4):
             days[i] = forecast[i].day
-            highTemp[i] = forecast[i].high + "°F"
+            temp[i] = forecast[i].high + "°F"
 
 
         weatherImageArray = [None] * 4
