@@ -98,6 +98,25 @@ class StartPage(tk.Frame):
         else:
             self.downButton.config(state="disable")
 
+    # Custom timer without using any multithreading
+    def starTimer(self):
+        self.timer(5)
+
+    def timer(self,seconds):
+        s = int(self.time)
+        s += 1
+        self.time = str(s)
+        print(s)
+
+        # keeps the gui from freezing
+        self.after(930,self.starTimer)
+
+        if(s == seconds):
+            s = 0
+            self.time = str(s)
+            print('Done')
+
+
     def systemToggle(self):
         if(self.isOn == True):
             self.isOn = False
@@ -126,7 +145,6 @@ class StartPage(tk.Frame):
             vacayImage = tk.PhotoImage(file ="airplaneModeOn.png")
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
-
 
 
     def __init__(self, parent, controller):
@@ -240,12 +258,12 @@ class StartPage(tk.Frame):
         # Uses weather API to get three day forecast
         # Will forecast next three days, not today's forecast
         days = [None] * 4
-        temp = [None] * 4
+        highTemp = [None] * 4
         forecast = controll.getForecast(self.variable.get())
 
         for i in range(0,4):
             days[i] = forecast[i].day
-            temp[i] = forecast[i].high + "°F"
+            highTemp[i] = forecast[i].high + "°F"
 
 
         weatherImageArray = [None] * 4
@@ -342,6 +360,8 @@ class StartPage(tk.Frame):
         self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
 
+        self.time = str(0)
+        self.starTimer()
 
 ###################################
 #                                 #
