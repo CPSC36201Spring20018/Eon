@@ -89,6 +89,8 @@ class StartPage(tk.Frame):
         else:
             self.upButton.config(state="disable")
 
+        # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+
     def tempDown(self):
         if(self.requestedTemperature < 90):
             self.requestedTemperature += 1
@@ -98,15 +100,24 @@ class StartPage(tk.Frame):
         else:
             self.downButton.config(state="disable")
 
+        # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+
+
+    def setRequestedTemperature(self):
+        # check to see if system is on and update requestedTemperature
+        if (self.isOn):
+            # set system to requested temperature
+            self.controll.setRequestedTemperature(self.requestedTemperature)
+
     # Custom timer without using any multithreading
     def starTimer(self):
-        self.timer(30)
+        # timer should be called every 15 seconds
+        self.timer(15)
 
     def timer(self,seconds):
         s = int(self.time)
         s += 1
         self.time = str(s)
-        print(s)
 
         # keeps the gui from freezing
         self.after(930,self.starTimer)
@@ -116,8 +127,15 @@ class StartPage(tk.Frame):
             self.time = str(s)
             self.now = datetime.datetime.now().time()
             self.timeLabel.configure(text=self.now.strftime("%I:%M %p"))
-            print('Done')
 
+            # check current indoor temperture
+            self.currentIndoorTemp += 1
+            self.currentIndoorTempString = str(self.currentIndoorTemp) + "°F"  # str(self.controll.setCurrentTemperature()) + "°F"
+            self.currentIndoorTempLabel.configure(text=self.currentIndoorTempString)
+
+            # check current outdoor temperture
+            self.currentTempString = str(self.controll.getCityTemperature(self.variable.get())) + "°F"
+            self.currentOutdoorTempLabel.configure(text=self.currentOutdoorTempString)
 
     def systemToggle(self):
         if(self.isOn == True):
@@ -132,6 +150,9 @@ class StartPage(tk.Frame):
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "On")
+
+            # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+
 
     def vacayToggle(self):
         if(self.vacayIsOn == True):
@@ -162,7 +183,7 @@ class StartPage(tk.Frame):
         background.image = backgroundImage
 
         # Instance Of Controller class
-        controll = cont.Controller();
+        self.controll = cont.Controller();
 
         ################################
         #                              #
@@ -232,7 +253,7 @@ class StartPage(tk.Frame):
         # Function to that would change temperture label when city is change
         def selectCity(value):
             days = [None] * 4
-            forecast = controll.getForecast(value)
+            forecast = self.controll.getForecast(value)
             self.requestedTemperature = forecast[0].high
             self.requestedTempLabel.configure(text = str(self.requestedTemperature) +"°F")
             self.requestedTemperature = int(self.requestedTemperature)
@@ -255,13 +276,18 @@ class StartPage(tk.Frame):
 
 
         # Get current location based off of IP address
-        self.variable.set(controll.getLocation())
+        self.variable.set(self.controll.getLocation())
 
         # Uses weather API to get three day forecast
         # Will forecast next three days, not today's forecast
         days = [None] * 4
         temp = [None] * 4
-        forecast = controll.getForecast(self.variable.get())
+        forecast = self.controll.getForecast(self.variable.get())
+
+        # Strings for current tempertures
+        self.currentIndoorTemp = 67
+        self.currentIndoorTempString = str(self.currentIndoorTemp) + "°F"  # str(self.controll.setCurrentTemperature()) + "°F"
+        self.currentOutdoorTempString = str(self.controll.getCityTemperature(self.variable.get())) + "°F"
 
         for i in range(0,4):
             days[i] = forecast[i].day
@@ -328,22 +354,26 @@ class StartPage(tk.Frame):
         #                              #
         ################################
 
-
-	# outdoor temperature
-
-        outdoorTextLabel = tk.Label(self, text = self.variable.get(),font = ("Calibri, 15"),bg = 'black',fg = 'white')
-        outdoorTextLabel.place(relx=0.55, rely=0.5)
-        self.currentTemperature = temp[0]
-        self.currentTempString = str(self.currentTemperature)
-        self.currentTempLabel = tk.Label(self, text=self.currentTempString, font=controller.temp_font, bg = 'black',fg = 'white')
-        self.currentTempLabel.config(font = ("Calibri", 17))
-        self.currentTempLabel.place(relx=0.85, rely=0.5)
-        weatherImageArray[0].place(relx=0.8, rely=0.5)
-
-	# indoor temperature
+        # indoor temperature
         self.requestedtTempString = str(self.requestedTemperature)+"°F"
         self.requestedTempLabel = tk.Label(self, text=self.requestedtTempString, font=controller.temp_font, bg = 'black',fg = 'white')
         self.requestedTempLabel.place(relx=0.2, rely=0.3)
+
+        currentTextLabel = tk.Label(self, text = 'Current',font = ("Calibri, 15"),bg = 'black',fg = 'white')
+        currentTextLabel.place(relx=0.55, rely=0.45)
+        self.currentIndoorTempLabel = tk.Label(self, text=self.currentIndoorTempString, font=controller.temp_font, bg = 'black',fg = 'white')
+        self.currentIndoorTempLabel.config(font = ("Calibri", 17))
+        self.currentIndoorTempLabel.place(relx=0.85, rely=0.45)
+
+	    # outdoor temperature
+
+        outdoorTextLabel = tk.Label(self, text = self.variable.get(),font = ("Calibri, 15"),bg = 'black',fg = 'white')
+        outdoorTextLabel.place(relx=0.55, rely=0.55)
+        self.currentOutdoorTempLabel = tk.Label(self, text=self.currentOutdoorTempString, font=controller.temp_font, bg = 'black',fg = 'white')
+        self.currentOutdoorTempLabel.config(font = ("Calibri", 17))
+        self.currentOutdoorTempLabel.place(relx=0.85, rely=0.55)
+        weatherImageArray[0].place(relx=0.8, rely=0.55)
+
 
 
         ################################
@@ -364,6 +394,10 @@ class StartPage(tk.Frame):
         self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
 
+        # Turn system of at startup
+        self.systemToggle()
+
+        # Timer needed to check time and current tempertures for both indoor and outdoor
         self.time = str(0)
         self.starTimer()
 
