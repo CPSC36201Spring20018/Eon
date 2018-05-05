@@ -118,5 +118,11 @@ class Controller():
             self.isVacation = False
             self.Enable()
 
+    def getCurrentDateTime():
+        return dt.datetime.now()
+
+    def getCurrentTime():
+        return dt.time.now()
+
 #if __name__ == "__main__":
 #    main()
