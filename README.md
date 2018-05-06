@@ -18,7 +18,7 @@
         1.2 Analysis Class Report.pdf
         1.3 Written Requirements.pdf
 	1.4 Test Procedure.pdf
-	1.5 Test Plan. pdf
+	1.5 Test Plan.pdf
 	1.6 Test Report.pdf
 		
     2. Program files
