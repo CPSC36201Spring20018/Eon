@@ -80,9 +80,9 @@ class StartPage(tk.Frame):
             self.requestedTemperature -= 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
-            self.downButton.config(state="normal")
+            self.upButton.config(state="normal")
         else:
-            self.upButton.config(state="disable")
+            self.downButton.config(state="disable")
         if not self.vacayIsOn:
             self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
@@ -91,7 +91,7 @@ class StartPage(tk.Frame):
             self.requestedTemperature += 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
             self.requestedTempLabel.configure(text = self.requestedtTempString)
-            self.upButton.config(state="normal")
+            self.downButton.config(state="normal")
         else:
             self.upButton.config(state="disable")
 
@@ -157,7 +157,7 @@ class StartPage(tk.Frame):
             self.controll.Disable()
         else:
             self.isOn = True
-            powerImage = tk.PhotoImage(file = "imagespowerOn.png")
+            powerImage = tk.PhotoImage(file = "images/powerOn.png")
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "On")
@@ -407,10 +407,10 @@ class StartPage(tk.Frame):
         upArrow = tk.PhotoImage(file = "images/up.png")
         downArrow = tk.PhotoImage(file = "images/down.png")
 
-        self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempDown, bg = 'black', highlightbackground = 'black', highlightcolor = 'black',activebackground='#333333', activeforeground = 'white')
+        self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempUp, bg = 'black', highlightbackground = 'black', highlightcolor = 'black',activebackground='#333333', activeforeground = 'white')
         self.upButton.image = upArrow
         self.upButton.place(relx=0.09, rely =0.55)
-        self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempUp, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
+        self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempDown, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
 
