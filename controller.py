@@ -1,8 +1,8 @@
-# import backEnd.calendarAPI as calendarAPI   # Needed for googleapis
-# import backEnd.HVAC_Controller as HVAC_Controller  # Needed for GPIO
+import backEnd.calendarAPI as calendarAPI   # Needed for googleapis
+import backEnd.HVAC_Controller as HVAC_Controller  # Needed for GPIO
 import backEnd.ipLocation as ipLocation
 import backEnd.weatherAPI as weatherAPI
-# import backEnd.tempRead as tempRead # Needed for GPIO
+import backEnd.tempRead as tempRead # Needed for GPIO
 import datetime as dt
 
 
@@ -41,7 +41,7 @@ class Controller():
         self.threshold = 3
         self.isH = False
         self.isA = False
-        self.isDisable = False
+        self.isDisable = True
         self.isVacation = False
 
     def getLocation(self):

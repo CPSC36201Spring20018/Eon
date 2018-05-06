@@ -89,7 +89,7 @@ class StartPage(tk.Frame):
         else:
             self.upButton.config(state="disable")
 
-        # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+        self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
     def tempDown(self):
         if(self.requestedTemperature < 90):
@@ -100,7 +100,7 @@ class StartPage(tk.Frame):
         else:
             self.downButton.config(state="disable")
 
-        # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+        self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
 
     def setRequestedTemperature(self):
@@ -129,13 +129,27 @@ class StartPage(tk.Frame):
             self.timeLabel.configure(text=self.now.strftime("%I:%M %p"))
 
             # check current indoor temperture
-            self.currentIndoorTemp += 1
-            self.currentIndoorTempString = str(self.currentIndoorTemp) + "°F"  # str(self.controll.setCurrentTemperature()) + "°F"
+            self.controll.setCurrentTemperature()
+            self.currentIndoorTempString = str(self.controll.getCurrentTemperature()) + "°F"
             self.currentIndoorTempLabel.configure(text=self.currentIndoorTempString)
 
             # check current outdoor temperture
             self.currentTempString = str(self.controll.getCityTemperature(self.variable.get())) + "°F"
             self.currentOutdoorTempLabel.configure(text=self.currentOutdoorTempString)
+
+            if self.controll.getCurrentTemperature() <= self.requestedTemperature and self.controll.isAC():
+                self.controll.deactivateAC()
+            if self.controll.getCurrentTemperature() >= self.requestedTemperature and self.controll.isHeat():
+                self.controll.deactivateHeat()
+            if (self.controll.getCurrentTemperature() - self.controll.threshold > self.requestedTemperature) and not self.controll.isAC() and not self.vacayIsOn:
+                if self.controll.isHeat():
+                    self.controll.deactivateHeat()
+                self.controll.activateAC()
+            if self.controll.getCurrentTemperature() + self.controll.threshold < self.requestedTemperature and not self.controll.isHeat():
+                if self.controll.isAC():
+                    self.controll.deactivateAC()
+                self.controll.activateHeat()
+
 
     def systemToggle(self):
         if(self.isOn == True):
@@ -144,14 +158,16 @@ class StartPage(tk.Frame):
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "Off")
+            self.controll.Disable()
         else:
             self.isOn = True
             powerImage = tk.PhotoImage(file = "powerOn.png")
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "On")
+            self.controll.Enable()
 
-            # self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+        self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
 
     def vacayToggle(self):
@@ -161,6 +177,7 @@ class StartPage(tk.Frame):
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
             self.systemOnOffButton.configure(text = "Off")
+            self.controll.setVacation()
 
         else:
             self.vacayIsOn = True
@@ -168,6 +185,7 @@ class StartPage(tk.Frame):
             vacayImage = tk.PhotoImage(file ="airplaneModeOn.png")
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
+            self.controll.setVacation()
 
 
     def __init__(self, parent, controller):
@@ -285,8 +303,8 @@ class StartPage(tk.Frame):
         forecast = self.controll.getForecast(self.variable.get())
 
         # Strings for current tempertures
-        self.currentIndoorTemp = 67
-        self.currentIndoorTempString = str(self.currentIndoorTemp) + "°F"  # str(self.controll.setCurrentTemperature()) + "°F"
+        self.controll.setCurrentTemperature()
+        self.currentIndoorTempString = str(self.controll.getCurrentTemperature()) + "°F"
         self.currentOutdoorTempString = str(self.controll.getCityTemperature(self.variable.get())) + "°F"
 
         for i in range(0,4):
