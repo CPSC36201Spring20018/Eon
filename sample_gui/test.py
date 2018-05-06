@@ -88,8 +88,8 @@ class StartPage(tk.Frame):
             self.downButton.config(state="normal")
         else:
             self.upButton.config(state="disable")
-
-        self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+        if not self.vacayIsOn:
+            self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
     def tempDown(self):
         if(self.requestedTemperature < 90):
@@ -98,9 +98,10 @@ class StartPage(tk.Frame):
             self.requestedTempLabel.configure(text = self.requestedtTempString)
             self.upButton.config(state="normal")
         else:
-            self.downButton.config(state="disable")
+            self.upButton.config(state="disable")
 
-        self.setRequestedTemperature() # uncomment to when connected to raspberry pi
+        if not self.vacayIsOn:
+            self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
 
     def setRequestedTemperature(self):
@@ -137,15 +138,15 @@ class StartPage(tk.Frame):
             self.currentTempString = str(self.controll.getCityTemperature(self.variable.get())) + "°F"
             self.currentOutdoorTempLabel.configure(text=self.currentOutdoorTempString)
 
-            if self.controll.getCurrentTemperature() <= self.requestedTemperature and self.controll.isAC():
+            if self.controll.getCurrentTemperature() <= self.controll.getRequestedTemperature() and self.controll.isAC():
                 self.controll.deactivateAC()
-            if self.controll.getCurrentTemperature() >= self.requestedTemperature and self.controll.isHeat():
+            if self.controll.getCurrentTemperature() >= self.controll.getRequestedTemperature() and self.controll.isHeat():
                 self.controll.deactivateHeat()
-            if (self.controll.getCurrentTemperature() - self.controll.threshold > self.requestedTemperature) and not self.controll.isAC() and not self.vacayIsOn:
+            if (self.controll.getCurrentTemperature() - self.controll.threshold > self.controll.getRequestedTemperature()) and not self.controll.isAC() and not self.vacayIsOn:
                 if self.controll.isHeat():
                     self.controll.deactivateHeat()
                 self.controll.activateAC()
-            if self.controll.getCurrentTemperature() + self.controll.threshold < self.requestedTemperature and not self.controll.isHeat():
+            if self.controll.getCurrentTemperature() + self.controll.threshold < self.controll.getRequestedTemperature() and not self.controll.isHeat():
                 if self.controll.isAC():
                     self.controll.deactivateAC()
                 self.controll.activateHeat()
@@ -173,7 +174,6 @@ class StartPage(tk.Frame):
     def vacayToggle(self):
         if(self.vacayIsOn == True):
             self.vacayIsOn = False
-            self.requestedTemperature = self.storedRequestedTemperature
             vacayImage = tk.PhotoImage(file ="airplaneModeOff.png")
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
@@ -182,7 +182,6 @@ class StartPage(tk.Frame):
             self.setRequestedTemperature()
         else:
             self.vacayIsOn = True
-            self.storedRequestedTemperature = self.requestedTemperature
             self.systemOnOffButton.configure(text = "On")
             vacayImage = tk.PhotoImage(file ="airplaneModeOn.png")
             self.vacayButton.configure(image = vacayImage)
@@ -197,7 +196,6 @@ class StartPage(tk.Frame):
         self.isOn = True
         self.currentTemperature = 80
         self.requestedTemperature = 70
-        self.storedRequestedTemperature = 70
         backgroundImage = tk.PhotoImage(file = "bg.png")
         background = tk.Label(self, image = backgroundImage)
         background.place(x=0, y=0, relwidth=1, relheight=1)
@@ -275,7 +273,7 @@ class StartPage(tk.Frame):
         def selectCity(value):
             days = [None] * 4
             forecast = self.controll.getForecast(value)
-            if !self.vacayIsOn:
+            if not self.vacayIsOn:
                 self.requestedTemperature = int(forecast[0].high)
                 self.requestedTempLabel.configure(text = str(self.requestedTemperature) +"°F")
 
