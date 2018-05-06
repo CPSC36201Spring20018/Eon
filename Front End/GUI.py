@@ -1,8 +1,3 @@
-##############################################
-# Created on:
-# Written by:
-#
-##############################################
 # sys is needed to go back to parent directory
 import sys
 sys.path.append('../')
@@ -55,7 +50,7 @@ class SampleApp(tk.Tk):
 
             frame = F(parent = container, controller=self)
 
-            #spaceImage = tk.PhotoImage(file = "space.gif")
+            #spaceImage = tk.PhotoImage(file = "images/space.gif")
             #frame = tk.Label(self, image = spaceImage)
             #frame.image = spaceImage
             self.frames[page_name] = frame
@@ -80,7 +75,7 @@ class SampleApp(tk.Tk):
 
 class StartPage(tk.Frame):
 
-    def tempUp(self):
+    def tempDown(self):
         if(self.requestedTemperature > 60):
             self.requestedTemperature -= 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
@@ -91,7 +86,7 @@ class StartPage(tk.Frame):
         if not self.vacayIsOn:
             self.setRequestedTemperature() # uncomment to when connected to raspberry pi
 
-    def tempDown(self):
+    def tempUp(self):
         if(self.requestedTemperature < 90):
             self.requestedTemperature += 1
             self.requestedtTempString = str(self.requestedTemperature)+"°F"
@@ -155,14 +150,14 @@ class StartPage(tk.Frame):
     def systemToggle(self):
         if(self.isOn == True):
             self.isOn = False
-            powerImage = tk.PhotoImage(file = "powerOff.png")
+            powerImage = tk.PhotoImage(file = "images/powerOff.png")
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "Off")
             self.controll.Disable()
         else:
             self.isOn = True
-            powerImage = tk.PhotoImage(file = "powerOn.png")
+            powerImage = tk.PhotoImage(file = "imagespowerOn.png")
             self.systemOnOffButton.configure(image = powerImage)
             self.systemOnOffButton.photo = powerImage
             self.systemOnOffButton.configure(text = "On")
@@ -174,7 +169,7 @@ class StartPage(tk.Frame):
     def vacayToggle(self):
         if(self.vacayIsOn == True):
             self.vacayIsOn = False
-            vacayImage = tk.PhotoImage(file ="airplaneModeOff.png")
+            vacayImage = tk.PhotoImage(file ="images/airplaneModeOff.png")
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
             self.systemOnOffButton.configure(text = "Off")
@@ -183,7 +178,7 @@ class StartPage(tk.Frame):
         else:
             self.vacayIsOn = True
             self.systemOnOffButton.configure(text = "On")
-            vacayImage = tk.PhotoImage(file ="airplaneModeOn.png")
+            vacayImage = tk.PhotoImage(file ="images/airplaneModeOn.png")
             self.vacayButton.configure(image = vacayImage)
             self.vacayButton.photo = vacayImage
             self.controll.setVacation()
@@ -196,7 +191,7 @@ class StartPage(tk.Frame):
         self.isOn = True
         self.currentTemperature = 80
         self.requestedTemperature = 70
-        backgroundImage = tk.PhotoImage(file = "bg.png")
+        backgroundImage = tk.PhotoImage(file = "images/bg.png")
         background = tk.Label(self, image = backgroundImage)
         background.place(x=0, y=0, relwidth=1, relheight=1)
         background.image = backgroundImage
@@ -210,7 +205,7 @@ class StartPage(tk.Frame):
         #           SETTINGS           #
         ################################
 
-       	wifiImage = tk.PhotoImage(file = "wifi.png")
+       	wifiImage = tk.PhotoImage(file = "images/wifi.png")
 
         wifiLabel = tk.Label(self, image = wifiImage, bg = 'black')
         wifiLabel.place(relx=0.95, rely = 0.01)
@@ -244,19 +239,19 @@ class StartPage(tk.Frame):
         ################################
 
         # Power Button
-        powerButton = tk.PhotoImage(file = "powerOn.png")
+        powerButton = tk.PhotoImage(file = "images/powerOn.png")
         self.systemOnOffButton = tk.Button(self, image = powerButton, relief = 'flat', command= self.systemToggle, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.systemOnOffButton.image = powerButton
         self.systemOnOffButton.place(relx=.05, rely = 0.01)
 
 	# settings button
-        settingsImage = tk.PhotoImage(file = "settings.png")
+        settingsImage = tk.PhotoImage(file = "images/settings.png")
         settingsButton = tk.Button(self, image = settingsImage, relief= 'flat',command=lambda: controller.show_frame("SettingsPage"), bg ='black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         settingsButton.image = settingsImage
         settingsButton.place(relx=0.1, rely=0.01)
 
 	# vacation button
-        vacayImage = tk.PhotoImage(file = "airplaneModeOff.png")
+        vacayImage = tk.PhotoImage(file = "images/airplaneModeOff.png")
         self.vacayButton = tk.Button(self, image = vacayImage, relief='flat',command=self.vacayToggle, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.vacayButton.image = vacayImage
         self.vacayButton.place(relx=0.15,rely=0.01)
@@ -317,19 +312,19 @@ class StartPage(tk.Frame):
         for i in range(0,4):
             weatherImageSearch = forecast[i].text
             if weatherImageSearch == "Sunny":
-                weatherImage = tk.PhotoImage(file = "sunny.png")
+                weatherImage = tk.PhotoImage(file = "images/sunny.png")
             elif weatherImageSearch == "Partly Cloudy":
-                weatherImage = tk.PhotoImage(file = "partlyCloudy.png")
+                weatherImage = tk.PhotoImage(file = "images/partlyCloudy.png")
             elif weatherImageSearch == "Mostly Cloudy":
-                weatherImage = tk.PhotoImage(file = "mostlyCloudy.png")
+                weatherImage = tk.PhotoImage(file = "images/mostlyCloudy.png")
             elif weatherImageSearch == "Cloudy":
-                weatherImage = tk.PhotoImage(file = "cloudy.png")
+                weatherImage = tk.PhotoImage(file = "images/cloudy.png")
             elif weatherImageSearch == "Breezy":
-                weatherImage = tk.PhotoImage(file = "wind.png")
+                weatherImage = tk.PhotoImage(file = "images/wind.png")
             elif weatherImageSearch == "Windy":
-                weatherImage = tk.PhotoImage(file = "windy.png")
+                weatherImage = tk.PhotoImage(file = "images/windy.png")
             elif weatherImageSearch == "Rainy":
-                weatherImage = tk.PhotoImage(file = "rain.png")
+                weatherImage = tk.PhotoImage(file = "images/rain.png")
             else:
                 weatherImage = None
 
@@ -409,13 +404,13 @@ class StartPage(tk.Frame):
         ################################
 
         # Up and Down Arrows Images
-        upArrow = tk.PhotoImage(file = "up.png")
-        downArrow = tk.PhotoImage(file = "down.png")
+        upArrow = tk.PhotoImage(file = "images/up.png")
+        downArrow = tk.PhotoImage(file = "images/down.png")
 
-        self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempUp, bg = 'black', highlightbackground = 'black', highlightcolor = 'black',activebackground='#333333', activeforeground = 'white')
+        self.upButton = tk.Button(self, image = upArrow, relief = 'flat',command= self.tempDown, bg = 'black', highlightbackground = 'black', highlightcolor = 'black',activebackground='#333333', activeforeground = 'white')
         self.upButton.image = upArrow
         self.upButton.place(relx=0.09, rely =0.55)
-        self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempDown, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
+        self.downButton = tk.Button(self, image = downArrow, relief = 'flat', command= self.tempUp, bg = 'black', highlightbackground = 'black',activebackground='#333333', activeforeground = 'white')
         self.downButton.place(relx=0.35, rely=0.55)
         self.downButton.image = downArrow
 
